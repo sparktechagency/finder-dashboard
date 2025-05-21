@@ -122,3 +122,13 @@
     /* background: ; */
   }
 }
+
+/* Example: hide default close button if it has a known class */
+.default-dialog-close-button {
+  display: none;
+}
+
+/* Example: hide default close button if it has a known class */
+.default-dialog-close-button {
+  display: none;
+}

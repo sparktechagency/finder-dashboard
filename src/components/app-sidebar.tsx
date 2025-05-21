@@ -8,12 +8,13 @@ import { BiCategory } from "react-icons/bi";
 import { IoIosPeople } from "react-icons/io";
 import { MdOutlineSubscriptions } from "react-icons/md";
 import { PiBuildingApartmentThin } from "react-icons/pi";
-import { FaQuestion } from "react-icons/fa6";
+import { AiOutlineQuestionCircle } from "react-icons/ai";
+
 // import { NavProjects } from "@/components/nav-projects";
 
 import { LuFileSliders } from "react-icons/lu";
 import { PiNoteDuotone } from "react-icons/pi";
-import { TbEdit, TbNotes } from "react-icons/tb";
+import { TbEdit, TbLogout2, TbNotes } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 import { RiExchange2Fill } from "react-icons/ri";
 import { CiSettings } from "react-icons/ci";
@@ -54,7 +55,7 @@ const data = {
     {
       title: "FAQ",
       url: "/faq",
-      icon: FaQuestion,
+      icon: AiOutlineQuestionCircle,
     },
 
     {
@@ -96,11 +97,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarRail />
       <SidebarFooter className="mb-10 cursor-pointer">
-        <Link
-          to="/login"
-          className="flex items-center justify-center text-red-400"
-        >
-          <button className=" cursor-pointer">Logout</button>
+        <Link to="/login" className="flex items-center ml-3 text-red-400">
+          <button className=" cursor-pointer flex justify-center items-center gap-3">
+            <span>
+              <TbLogout2 size={22} />
+            </span>{" "}
+            <span> Logout</span>
+          </button>
         </Link>
       </SidebarFooter>
     </Sidebar>

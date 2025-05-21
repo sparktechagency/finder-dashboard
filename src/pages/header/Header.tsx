@@ -1,6 +1,6 @@
 import { MdOutlineNotifications } from "react-icons/md";
 
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const path = [
   { path: "/", name: "Dashboard" },
@@ -19,6 +19,7 @@ const path = [
 ];
 
 export default function Header() {
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const currentPathName = path.find((item) => item.path === currentPath);
@@ -41,7 +42,10 @@ export default function Header() {
             <MdOutlineNotifications size={28} />
           </div>
         </Link>
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => navigate("/profile")}
+        >
           <img
             className="rounded-full w-10 h-10 border-2 border-[#8AC2FF]"
             src="https://i.ibb.co/xJdQCTG/download.jpg"

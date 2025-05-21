@@ -73,81 +73,86 @@ export default function SubscribeEditModal({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-lg rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
-          <DialogTitle className="text-2xl mb-4">
-            {edit ? "Edit Subscribe" : "Add Subscribe"}
-          </DialogTitle>
+      <div className="">
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <DialogContent className="sm:max-w-lg rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
+            <DialogTitle className="text-2xl -mt-2">
+              {edit ? "Edit Subscription" : "Add Subscription"}
+            </DialogTitle>
 
-          {!edit && (
+            {!edit && (
+              <div className="mb-4">
+                <Label htmlFor="packageName">Package Name</Label>
+                <Select value={packageName} onValueChange={setPackageName}>
+                  <SelectTrigger id="packageName" className="w-full mt-1">
+                    <SelectValue placeholder="Select Package Name" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Premium Plan">Premium Plan</SelectItem>
+                    <SelectItem value="Standard Plan">Standard Plan</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             <div className="mb-4">
-              <Label htmlFor="packageName">Package Name</Label>
-              <Select value={packageName} onValueChange={setPackageName}>
-                <SelectTrigger id="packageName" className="w-full mt-1">
-                  <SelectValue placeholder="Select Package Name" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Premium Plan">Premium Plan</SelectItem>
-                  <SelectItem value="Standard Plan">Standard Plan</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="price">Price</Label>
+              <Input
+                id="price"
+                type="number"
+                placeholder="Enter price"
+                value={price !== undefined ? price : ""}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                className="mt-1 "
+              />
             </div>
-          )}
 
-          <div className="mb-4">
-            <Label htmlFor="price">Price</Label>
-            <Input
-              id="price"
-              type="number"
-              placeholder="Enter price"
-              value={price !== undefined ? price : ""}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              className="mt-1 "
-            />
-          </div>
+            {/* Package Offers Section */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2 px-1">
+                <h2 className="font-medium">Package Offers</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setOfferModalOpen(true)}
+                >
+                  <FiPlusCircle className="w-6 h-6 text-orange-500" />
+                </Button>
+              </div>
+              <div className="border border-gray-700 rounded-lg p-4 space-y-2">
+                {offers.map((offer, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center"
+                  >
+                    <div className="flex items-center gap-2">
+                      <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
+                      <span>{offer}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeOffer(index)}
+                    >
+                      <FiMinusCircle className="text-gray-500 w-5 h-5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          {/* Package Offers Section */}
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2 px-1">
-              <h2 className="font-medium">Package Offers</h2>
+            <div className="mt-6">
               <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setOfferModalOpen(true)}
+                className="w-full py-3 text-black"
+                onClick={onSubmit}
+                style={{ backgroundColor: "#F79535", borderColor: "#188754" }}
               >
-                <FiPlusCircle className="w-6 h-6 text-orange-500" />
+                Submit
               </Button>
             </div>
-            <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-              {offers.map((offer, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
-                    <span>{offer}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeOffer(index)}
-                  >
-                    <FiMinusCircle className="text-gray-500 w-5 h-5" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <Button
-              className="w-full py-3 text-black"
-              onClick={onSubmit}
-              style={{ backgroundColor: "#F79535", borderColor: "#188754" }}
-            >
-              Submit
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {/* Modal for adding new offer */}
       <Dialog open={isOfferModalOpen} onOpenChange={setOfferModalOpen}>

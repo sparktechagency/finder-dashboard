@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
-import { GoPlus } from "react-icons/go";
-import { HiMinus } from "react-icons/hi";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const data = [
   {
@@ -49,9 +48,9 @@ const Faq = () => {
               {item.title}
             </h3>
             {openId === item.id ? (
-              <HiMinus className="text-base md:text-lg lg:text-4xl duration-500 " />
+              <IoIosArrowUp className="text-base md:text-lg lg:text-2xl duration-500 " />
             ) : (
-              <GoPlus className="text-base md:text-lg lg:text-4xl duration-500" />
+              <IoIosArrowDown className="text-base md:text-lg lg:text-2xl duration-500" />
             )}
           </div>
           <div

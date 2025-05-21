@@ -72,7 +72,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           <button
             onClick={onClose}
             style={styles.closeButton}
-            className="text-[#BBB69A] h-5 w-5 pr-4"
+            className="text-black h-5 w-5 pr-4"
           >
             <IoMdClose />
           </button>

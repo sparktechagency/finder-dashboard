@@ -1,4 +1,5 @@
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import type { IconType } from "react-icons";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -14,6 +15,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { NavLink } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
 export function NavMain({
   items,
@@ -21,12 +23,12 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: IconType;
     isActive?: boolean;
     items?: {
       title: string;
       url: string;
-      icon?: LucideIcon;
+      icon?: IconType;
     }[];
   }[];
 }) {
@@ -62,7 +64,7 @@ export function NavMain({
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-2 px-4 py-2 ${
+                        `flex items-center gap-2 px-4 py-2  ${
                           isActive
                             ? "bg-[#F79535] text-black rounded-none rounded-r-full w-[90%]"
                             : "text-inherit"
@@ -84,14 +86,14 @@ export function NavMain({
                           <NavLink
                             to={subItem.url}
                             className={({ isActive }) =>
-                              isActive ? "bg-amber-400" : ""
+                              `flex items-center gap-2 px-4 py-2  ${
+                                isActive
+                                  ? "bg-[#F79535] text-black rounded-none rounded-r-full w-[90%]"
+                                  : "text-inherit"
+                              }`
                             }
                           >
-                            {subItem.icon && (
-                              <span className="mr-2 flex items-center justify-center">
-                                <subItem.icon size={20} />
-                              </span>
-                            )}
+                            {subItem.icon && <subItem.icon size={22} />}
                             <span>{subItem.title}</span>
                           </NavLink>
                         </SidebarMenuSubButton>

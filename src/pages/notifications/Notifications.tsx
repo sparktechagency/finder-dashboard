@@ -35,16 +35,16 @@ export default function Notifications() {
         {notifications.map((notification) => (
           <li
             key={notification.id}
-            className="flex items-center space-x-4 p-4 "
+            className="flex items-center space-x-4 p-4 text-[#81888C]"
           >
             <div className="text-yellow-500">
               <IoIosNotifications size={24} />
             </div>
             <div className="flex-1">
-              <p className="text-[#1A1E25] font-semibold text-[18px]">
+              <p className="font-semibold text-[18px]">
                 {notification.message}
               </p>
-              <p className="text-[#1A1E25] text-sm">{notification.time}</p>
+              <p className=" text-sm">{notification.time}</p>
             </div>
           </li>
         ))}

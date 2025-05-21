@@ -140,9 +140,9 @@ export default function User() {
     <>
       <Table>
         {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-        <TableHeader>
-          <TableRow className="bg-[#F6F6F6] h-12">
-            <TableHead className="w-[100px] rounded-tl-lg">Serial ID</TableHead>
+        <TableHeader className="">
+          <TableRow className="bg-[#F6F6F6] h-12 font-bold">
+            <TableHead className="">Serial ID</TableHead>
             <TableHead>User Name</TableHead>
             <TableHead>Plan Type </TableHead>
             <TableHead className="">Duration</TableHead>
