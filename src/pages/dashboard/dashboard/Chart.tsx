@@ -12,7 +12,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -41,15 +40,15 @@ export default function Chart() {
   return (
     <div className="my-4 bg-[#F6F6F6] shadow-md rounded-lg px-3 pt-1 text-textGray">
       <div className="flex items-center justify-between my-4">
-        <h1 className="">Total user statics</h1>
+        <h1 className="text-[#1A1E25]">Total Agency statistics</h1>
         <div className="flex justify-center items-center gap-7">
           <div className="text-[#1A1E25] flex justify-center items-center gap-2">
-            <p className="h-3 w-3 bg-[#1A1E25] rounded-full"></p>
-            <h1>User</h1>
+            <p className="h-3 w-3 bg-[#81888C] rounded-full"></p>
+            <h1>Agency</h1>
           </div>
-          <div className="text-[#8DB501] flex justify-center items-center gap-2">
-            <p className="h-3 w-3 bg-[#8DB501] rounded-full"></p>
-            <h1>Venues</h1>
+          <div className="text-[#F79535] flex justify-center items-center gap-2">
+            <p className="h-3 w-3 bg-[#F79535] rounded-full"></p>
+            <h1>Apartment list</h1>
           </div>
           <div>
             <Select defaultValue="2025">
@@ -81,12 +80,12 @@ export default function Chart() {
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis tickFormatter={(_, index: number) => index.toString()} />
           <Tooltip />
-          <Legend />
+          {/* <Legend /> */}
           <Bar
             dataKey="pv"
-            fill="#1A1E25"
+            fill="#81888C"
             barSize={10}
             radius={[10, 10, 0, 0]}
           />

@@ -118,8 +118,8 @@ export default function SellerChart() {
               <TableCell className="">{invoice.duration}</TableCell>
               <TableCell className="">€{invoice.price}</TableCell>
 
-              <TableCell className="">{invoice.startDate} %</TableCell>
-              <TableCell className="">{invoice.endDate} %</TableCell>
+              <TableCell className="">{invoice.startDate} </TableCell>
+              <TableCell className="">{invoice.endDate} </TableCell>
               <TableCell
                 className=" cursor-pointer "
                 onClick={() => setUserDetails(true)}
