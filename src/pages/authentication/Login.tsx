@@ -68,13 +68,13 @@ export default function Login() {
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
-                <Checkbox id="terms" />
-                <Label
+                <Checkbox />
+                {/* <Label
                   htmlFor="remember"
                   className="text-lg text-[#1A1E25] cursor-pointer"
                 >
                   Remember me
-                </Label>
+                </Label> */}
               </div>
               <Link to="/forget-password" className="text-md text-[#1A1E25]">
                 Forget password

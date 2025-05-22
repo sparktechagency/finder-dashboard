@@ -4,10 +4,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const path = [
   { path: "/", name: "Dashboard" },
-  { path: "/user", name: "User" },
+  { path: "/subscriber", name: "Subscriber" },
   { path: "/apartment", name: "Apartment" },
   { path: "/subscriptions", name: "Subscriptions" },
   { path: "/faq", name: "FAQ" },
+  { path: "/apartmentForm", name: "Apartment Form" },
 
   { path: "/terms-condition", name: "Terms & Condition" },
   { path: "/about", name: "About Us" },

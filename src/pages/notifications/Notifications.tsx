@@ -37,11 +37,11 @@ export default function Notifications() {
             key={notification.id}
             className="flex items-center space-x-4 p-4 text-[#81888C]"
           >
-            <div className="text-yellow-500">
+            <div className="text-yellow-500 h-8 w-8 flex items-center justify-center border border-yellow-500 rounded-full">
               <IoIosNotifications size={24} />
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-[18px]">
+              <p className="font-semibold text-[16px]">
                 {notification.message}
               </p>
               <p className=" text-sm">{notification.time}</p>
