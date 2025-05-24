@@ -9,6 +9,7 @@ const path = [
   { path: "/subscriptions", name: "Subscriptions" },
   { path: "/faq", name: "FAQ" },
   { path: "/apartmentForm", name: "Apartment Form" },
+  { path: "/apartment-details", name: "Apartment Details" },
 
   { path: "/terms-condition", name: "Terms & Condition" },
   { path: "/about", name: "About Us" },

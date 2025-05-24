@@ -51,6 +51,7 @@ export function ApartmentFormChild({
   handleRemove,
 }: ApartmentFormProps) {
   const [right, setRight] = useState(false);
+  const [selectValue, setSelectValue] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.stopPropagation();
@@ -60,7 +61,7 @@ export function ApartmentFormChild({
     console.log(values);
 
     console.log("Quality Specs:", qualitySpecs);
-
+    console.log(selectValue);
     // // For single files:
     // const paymentFile = data.get("paymentPlan"); // This will now contain the file object
     // console.log(paymentFile);
@@ -173,7 +174,10 @@ export function ApartmentFormChild({
             <Label htmlFor="bedrooms" className="mb-2 text-black">
               Number of Bedrooms
             </Label>
-            <Select>
+            <Select
+              value={selectValue}
+              onValueChange={(val) => setSelectValue(val)}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="2" />
               </SelectTrigger>
@@ -214,7 +218,10 @@ export function ApartmentFormChild({
                 placeholder="Pick Location"
                 className="pr-10"
               />
-              <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <MapPin
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                onClick={() => window.open("https://www.google.com/maps")}
+              />
             </div>
           </div>
         </div>

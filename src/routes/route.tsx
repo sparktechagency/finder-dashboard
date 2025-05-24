@@ -18,6 +18,7 @@ import Apartment from "@/pages/dashboard/apartment/Apartment";
 import Faq from "@/pages/faq/FAQ";
 import Subscriptions from "@/pages/subscriptions/Subscriber";
 import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
+import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { path: "ApartmentForm", element: <ApartmentForm /> },
 
       { path: "apartment", element: <Apartment /> },
+      { path: "apartment-details", element: <ApartmentDetails /> },
       { path: "subscriptions", element: <Subscriptions /> },
       { path: "faq", element: <Faq /> },
 

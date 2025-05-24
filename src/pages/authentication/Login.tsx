@@ -3,23 +3,42 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { useLoginMutation } from "@/redux/apiSlice/auth/auth";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
-type FormData = {
-  email: string;
-  password: string;
-};
+type FormData = { email: string; password: string };
 
 export default function Login() {
+  const [login, { data, isLoading, isSuccess }] = useLoginMutation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoading) toast.loading("...isLoading", { id: "login-toast" });
+    else {
+      toast.dismiss("login-toast");
+      if (isSuccess && data?.data?.accessToken) {
+        toast.success("Login Successful", { id: "login-toast" });
+        localStorage.setItem("accessToken", data.data.accessToken);
+        navigate("/");
+      }
+    }
+  }, [data, isLoading, isSuccess, navigate]);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log("Submitted:", data);
+  const onSubmit = async (form: FormData) => {
+    try {
+      await login(form);
+    } catch {
+      toast.error("login failed");
+    }
   };
 
   return (
@@ -32,7 +51,6 @@ export default function Login() {
               Please enter your email and password to continue
             </p>
           </div>
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Label className="text-[#1A1E25] text-xl">Email</Label>
@@ -42,7 +60,7 @@ export default function Login() {
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("email", { required: "Please enter your email!" })}
               />
-              {errors.email && (
+              {errors.email?.message && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.email.message}
                 </p>
@@ -59,7 +77,7 @@ export default function Login() {
                   required: "Please input your password!",
                 })}
               />
-              {errors.password && (
+              {errors.password?.message && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.password.message}
                 </p>
@@ -69,12 +87,6 @@ export default function Login() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Checkbox />
-                {/* <Label
-                  htmlFor="remember"
-                  className="text-lg text-[#1A1E25] cursor-pointer"
-                >
-                  Remember me
-                </Label> */}
               </div>
               <Link to="/forget-password" className="text-md text-[#1A1E25]">
                 Forget password
