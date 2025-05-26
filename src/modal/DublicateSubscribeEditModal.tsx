@@ -25,64 +25,70 @@ interface PackageModalProps {
   };
 }
 
-export default function SubscribeEditModal({
+export default function DublicateSubscribeEditModal({
   isOpen,
   onClose,
   edit,
 }: PackageModalProps) {
   const [createSubscription] = useCreateSubscriptionMutation();
-  const [packageName, setPackageName] = useState<string>("");
-  const [price, setPrice] = useState<number | undefined>();
-  const [descriptions, setDescriptions] = useState<string>("");
-  const [offers, setOffers] = useState(["120 day permission to use"]);
-  const [isOfferModalOpen, setOfferModalOpen] = useState(false);
-  const [newOffer, setNewOffer] = useState("");
-  const [duration, setDuration] = useState<number | string>("");
-  const [paymentType, setPaymentType] = useState<string>("");
-
-  console.log(descriptions);
+  const [formState, setFormState] = useState({
+    packageName: "",
+    price: undefined as number | undefined,
+    description: "",
+    offers: ["120 day permission to use"],
+    isOfferModalOpen: false,
+    newOffer: "",
+    duration: "" as string | number,
+    paymentType: "",
+  });
 
   useEffect(() => {
     if (edit?._id) {
-      setPrice(edit.price);
-      // setDuration(edit.duration || "");
-      setDescriptions(edit.description || "");
+      setFormState((prev) => ({
+        ...prev,
+        price: edit?.price,
+        description: edit?.description || "",
+        // optionally duration here if in edit
+      }));
     }
   }, [edit]);
 
   const removeOffer = (index: number) => {
-    setOffers((prev) => prev.filter((_, i) => i !== index));
+    setFormState((prev) => ({
+      ...prev,
+      offers: prev.offers.filter((_, i) => i !== index),
+    }));
   };
 
   const handleAddOffer = () => {
-    if (newOffer.trim()) {
-      setOffers([...offers, newOffer.trim()]);
-      setNewOffer("");
-      setOfferModalOpen(false);
+    if (formState.newOffer.trim()) {
+      setFormState((prev) => ({
+        ...prev,
+        offers: [...prev.offers, prev.newOffer.trim()],
+        newOffer: "",
+        isOfferModalOpen: false,
+      }));
     }
   };
 
   const onSubmit = async () => {
-    // Here you can handle the submission data
-    console.log({
-      packageName,
-      price,
-      offers,
-      duration,
-      paymentType,
-    });
+    const { packageName, price, offers, duration, paymentType } = formState;
+    console.log({ packageName, price, offers, duration, paymentType });
 
     const subscriptionData = {
       title: packageName || "Default Package",
       description: offers,
       price: price || 0,
-      duration: duration,
+      duration,
       paymentType,
     };
 
     await createSubscription(subscriptionData);
     onClose();
   };
+
+  // In JSX, access values like formState.packageName etc.
+  // And update with setFormState(prev => ({ ...prev, packageName: newVal })) on inputs
 
   return (
     <>
@@ -96,7 +102,15 @@ export default function SubscribeEditModal({
             {!edit && (
               <div className="mb-4">
                 <Label htmlFor="packageName">Package Name</Label>
-                <Select value={packageName} onValueChange={setPackageName}>
+                <Select
+                  value={formState.packageName}
+                  onValueChange={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      packageName: "Premium Plan",
+                    }))
+                  }
+                >
                   <SelectTrigger id="packageName" className="w-full mt-1">
                     <SelectValue placeholder="Select Package Name" />
                   </SelectTrigger>
@@ -114,8 +128,13 @@ export default function SubscribeEditModal({
                 id="price"
                 type="number"
                 placeholder="Enter price"
-                value={price !== undefined ? price : ""}
-                onChange={(e) => setPrice(Number(e.target.value))}
+                value={formState?.price !== undefined ? formState?.price : ""}
+                onChange={(e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    price: Number(e.target.value),
+                  }))
+                }
                 className="mt-1 "
               />
             </div>
@@ -126,8 +145,13 @@ export default function SubscribeEditModal({
                 id="duration"
                 type="text"
                 placeholder="Enter Duration"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
+                value={formState.duration}
+                onChange={(e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    duration: e.target.value,
+                  }))
+                }
                 className="mt-1 "
               />
             </div>
@@ -138,8 +162,13 @@ export default function SubscribeEditModal({
                 id="paymentType"
                 type="text"
                 placeholder="Enter paymentType"
-                value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
+                value={formState.paymentType}
+                onChange={(e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    paymentType: e.target.value,
+                  }))
+                }
                 className="mt-1 "
               />
             </div>
@@ -151,13 +180,18 @@ export default function SubscribeEditModal({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setOfferModalOpen(true)}
+                  onClick={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      isOfferModalOpen: true,
+                    }))
+                  }
                 >
                   <FiPlusCircle className="w-6 h-6 text-orange-500" />
                 </Button>
               </div>
               <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-                {offers.map((offer, index) => (
+                {formState.offers.map((offer, index) => (
                   <div
                     key={index}
                     className="flex justify-between items-center"
@@ -192,20 +226,29 @@ export default function SubscribeEditModal({
       </div>
 
       {/* Modal for adding new offer */}
-      <Dialog open={isOfferModalOpen} onOpenChange={setOfferModalOpen}>
+      <Dialog
+        open={formState.isOfferModalOpen}
+        onOpenChange={(open) =>
+          setFormState((prev) => ({ ...prev, isOfferModalOpen: open }))
+        }
+      >
         <DialogContent className="sm:max-w-md rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
           <DialogTitle>Add New Offer</DialogTitle>
           <Input
             placeholder="Enter offer name"
-            value={newOffer}
-            onChange={(e) => setNewOffer(e.target.value)}
-            className="mt-4 "
+            value={formState.newOffer}
+            onChange={(e) =>
+              setFormState((prev) => ({ ...prev, newOffer: e.target.value }))
+            }
+            className="mt-4"
           />
           <div className="mt-6 flex justify-end gap-2">
             <Button
               className="w-[48%]"
               variant="outline"
-              onClick={() => setOfferModalOpen(false)}
+              onClick={() =>
+                setFormState((prev) => ({ ...prev, isOfferModalOpen: false }))
+              }
             >
               Cancel
             </Button>

@@ -2,8 +2,9 @@ import { useState } from "react";
 
 import Premium from "./Premium";
 // import StandCard from "./StandCard";
-import SubscribeEditModal from "@/modal/SubscribeEditModal";
+// import SubscribeEditModal from "@/modal/SubscribeEditModal";
 import { GoPlus } from "react-icons/go";
+import DublicateSubscribeEditModal from "@/modal/DublicateSubscribeEditModal";
 
 export default function Subscriptions() {
   const [add, setAdd] = useState<boolean | null>(null);
@@ -29,7 +30,13 @@ export default function Subscriptions() {
       </div>
 
       {/* modal show */}
-      {add && <SubscribeEditModal isOpen={add} onClose={() => setAdd(null)} />}
+      {/* {add && <SubscribeEditModal isOpen={add} onClose={() => setAdd(null)} />} */}
+      {add && (
+        <DublicateSubscribeEditModal
+          isOpen={add}
+          onClose={() => setAdd(null)}
+        />
+      )}
     </>
   );
 }
