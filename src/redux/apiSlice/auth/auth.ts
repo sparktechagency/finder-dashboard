@@ -21,6 +21,7 @@ const auth = api.injectEndpoints({
     resetPassword: builder.mutation({
       query: (data) => {
         const resetToken = localStorage.getItem("resetToken");
+        console.log(resetToken);
         return {
           url: "/auth/reset-password",
           method: "POST",
@@ -55,4 +56,5 @@ export const {
   useForgetPasswordMutation,
   useResetPasswordMutation,
   useOtpVerifyMutation,
+  useResendOtpMutation,
 } = auth;

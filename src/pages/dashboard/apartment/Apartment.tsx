@@ -12,110 +12,26 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useGetApartmentsQuery } from "@/redux/apiSlice/apartments/apartments";
+import Loading from "@/components/layout/shared/Loading";
+import ErrorPage from "@/error/ErrorPage";
+import { imageUrl } from "@/redux/api/baseApi";
 
-const invoices = [
-  {
-    key: "1",
-    no: "#24721",
-    name: "Admin Asadujjaman",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "2",
-    no: "#26552",
-    name: "Admin Asadujjaman",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "3",
-    no: "#24563",
-    name: "Admin Asadujjaman",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "4",
-    no: "#2424",
-    name: "Dr. Anna KOWALSKA",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "5",
-    no: "#247865",
-    name: "Dr. Michael O'CONNOR",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "6",
-    no: "#24456",
-    name: "Dr. Yasmin AL-FARSI",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "7",
-    no: "#24727",
-    name: "Dr. Leila BEN AMAR",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "8",
-    no: "#24578",
-    name: "Dr. Elena PETROVA",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "9",
-    no: "#2499",
-    name: "Dr. Sergei IVANOV",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "10",
-    no: "#242310",
-    name: "Dr. Sofia OLIVEIRA",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "11",
-    no: "#249811",
-    name: "Dr. Ahmed KHAN",
-    location: "Jakarta, Indonesia",
-    code: "A54",
-    price: "23",
-    commision: "5",
-  },
-];
+interface ApartmentData {
+  _id: string;
+  apartmentImage: string[];
+  apartmentName: string;
+  commission: string;
+  price: number;
+  code: string;
+  contact: {
+    location: string;
+  };
+}
 
 export default function Apartment() {
+  const { data, isFetching, isError, isLoading } =
+    useGetApartmentsQuery(undefined);
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState(false);
 
@@ -138,6 +54,14 @@ export default function Apartment() {
       }
     });
   };
+
+  if (isLoading || isFetching) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <ErrorPage />;
+  }
   return (
     <>
       <div className="flex justify-end mb-3">
@@ -163,20 +87,26 @@ export default function Apartment() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.key} className="">
-              <TableCell className="font-medium p-3">{invoice.no}</TableCell>
+          {data?.data?.map((invoice: ApartmentData) => (
+            <TableRow key={invoice._id} className="">
+              <TableCell className="font-medium p-3">
+                {invoice?._id.slice(0, 4)}
+              </TableCell>
               <TableCell className="flex items-center gap-2">
                 <img
                   className="w-5 h-5"
-                  src="https://i.ibb.co/p1LwRJj/7732550.png"
-                  alt=""
+                  src={
+                    imageUrl
+                      ? `${imageUrl}${invoice.apartmentImage[0]}`
+                      : invoice.apartmentImage[0]
+                  }
+                  alt="pic"
                 />
-                {invoice.name}
+                {invoice.apartmentName}
               </TableCell>
-              <TableCell>{invoice.location}</TableCell>
-              <TableCell className="pl-8">{invoice.code}</TableCell>
-              <TableCell className="pl-8">{invoice.commision}%</TableCell>
+              <TableCell>{invoice?.contact?.location}</TableCell>
+              <TableCell className="pl-8">{invoice.code || "3434"}</TableCell>
+              <TableCell className="pl-8">{invoice.commission}%</TableCell>
               <TableCell className="">€{invoice.price}</TableCell>
               <TableCell
                 className=" cursor-pointer "

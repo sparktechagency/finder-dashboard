@@ -2,13 +2,22 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"; // or useRouter from next/navigation
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  useOtpVerifyMutation,
+  useResendOtpMutation,
+} from "@/redux/apiSlice/auth/auth";
+import toast from "react-hot-toast";
 
 type FormData = {
   otp: string;
 };
 
 export default function VerifyOtp() {
+  const [OtpVerify] = useOtpVerifyMutation();
+  const [resendOtp] = useResendOtpMutation(); // Assuming you have a resend OTP mutation
   const navigate = useNavigate();
+  const email = localStorage.getItem("email");
+  const adminEmail = email ? JSON.parse(email) : null;
 
   const {
     register,
@@ -16,9 +25,42 @@ export default function VerifyOtp() {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log("OTP Entered:", data);
-    navigate("/new-password");
+  const handleResendCode = async () => {
+    const data = {
+      email: adminEmail,
+    };
+
+    await resendOtp(data).unwrap();
+    toast.success("OTP code resent successfully!", {
+      duration: 1500,
+    });
+  };
+
+  const onSubmit = async (data: FormData) => {
+    const otp = Number(data.otp);
+
+    const verifyData = {
+      email: adminEmail,
+      oneTimeCode: otp,
+    };
+
+    console.log(verifyData);
+
+    await OtpVerify(verifyData).then((res) => {
+      if (res?.data?.success) {
+        toast.success(res?.data?.message, {
+          duration: 1500,
+        });
+        setTimeout(() => {
+          localStorage.setItem("resetToken", res?.data?.data);
+          navigate("/new-password");
+        }, 1500);
+      } else {
+        toast.error("Something went wrong otp", {
+          duration: 1500,
+        });
+      }
+    });
   };
 
   return (
@@ -64,7 +106,7 @@ export default function VerifyOtp() {
               <p>Didn't receive the code?</p>
               <p
                 className="text-[#79CAA1] font-semibold underline cursor-pointer"
-                // onClick={handleResendCode} // Add your resend logic here
+                onClick={handleResendCode} // Add your resend logic here
               >
                 Resend
               </p>

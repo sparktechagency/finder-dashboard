@@ -5,8 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useResetPasswordMutation } from "@/redux/apiSlice/auth/auth";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 export default function ResetPasswordForm() {
+  const [resetPassword, { data, isSuccess, isError }] =
+    useResetPasswordMutation();
   const navigate = useNavigate();
   const {
     register,
@@ -15,14 +20,35 @@ export default function ResetPasswordForm() {
   } = useForm<FormData>();
 
   type FormData = {
-    currentPassword: string;
     newPassword: string;
     confirmPassword: string;
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log("Submitted:", data);
-    navigate("/login");
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data);
+      toast.success("Password updated successfully");
+      navigate("/login");
+      window.location.reload();
+    } else if (isError) {
+      toast.error("Password update failed");
+    }
+  }, [isSuccess, isError, data, navigate]);
+
+  const onSubmit = async (formData: FormData) => {
+    console.log("Submitted:", formData);
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    const data = {
+      newPassword: formData.newPassword,
+      confirmPassword: formData.confirmPassword,
+    };
+
+    await resetPassword(data).unwrap();
   };
 
   return (
@@ -30,32 +56,14 @@ export default function ResetPasswordForm() {
       <Card className="bg-[#F6F6F6] text-[#1A1E25] p-7 rounded-md">
         <CardContent className="w-[550px]">
           <div className="text-center space-y-3 my-7">
-            <h1 className="text-3xl font-medium mt-2">Reset Password</h1>
-            <p className="text-[#929292]">
-              Please enter your email and password to continue
-            </p>
+            <h1 className="text-3xl font-medium mt-2">Set New Password</h1>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label className="text-[#1A1E25] text-xl">Current Password</Label>
-              <Input
-                type="password"
-                placeholder="Enter current password"
-                className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
-                {...register("currentPassword", { required: true })}
-              />
-              {errors.currentPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  Please input current password!
-                </p>
-              )}
-            </div>
-
-            <div>
               <Label className="text-[#1A1E25] text-xl">New Password</Label>
               <Input
-                type="password"
+                type="newPassword"
                 placeholder="Enter new password"
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("newPassword", { required: true })}
@@ -70,7 +78,7 @@ export default function ResetPasswordForm() {
             <div>
               <Label className="text-[#1A1E25] text-xl">Confirm Password</Label>
               <Input
-                type="password"
+                type="confirmPassword"
                 placeholder="Enter confirm password"
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("confirmPassword", { required: true })}
