@@ -2,15 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { MapPin } from "lucide-react";
 import { FaPlus } from "react-icons/fa6";
 
@@ -18,6 +10,8 @@ import { FormField } from "./FormField";
 import { ImageUpload } from "./ImageUpload";
 import { QualitySpecsInput } from "./QualitySpecsInput";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import SelectItems from "./SelectItem";
+import { company, completionYear, location } from "./Allname";
 
 interface ApartmentFormProps {
   images: Record<string, string>;
@@ -53,15 +47,20 @@ export function ApartmentFormChild({
   const [right, setRight] = useState(false);
   const [selectValue, setSelectValue] = useState("");
 
+  const handleSelectChange = (value: string) => {
+    setSelectValue(value);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.stopPropagation();
     e.preventDefault();
     const data = new FormData(e.currentTarget as HTMLFormElement);
     const values = Object.fromEntries(data.entries());
     console.log(values);
-
-    console.log("Quality Specs:", qualitySpecs);
     console.log(selectValue);
+
+    // console.log("Quality Specs:", qualitySpecs);
+
     // // For single files:
     // const paymentFile = data.get("paymentPlan"); // This will now contain the file object
     // console.log(paymentFile);
@@ -164,41 +163,9 @@ export function ApartmentFormChild({
         </div>
 
         {/* Right Column */}
+
+        {/* price */}
         <div>
-          <FormField
-            id="flatNumber"
-            label="Flat Number"
-            placeholder="Enter Flat Number"
-          />
-          <div className="my-4">
-            <Label htmlFor="bedrooms" className="mb-2 text-black">
-              Number of Bedrooms
-            </Label>
-            <Select
-              value={selectValue}
-              onValueChange={(val) => setSelectValue(val)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="2" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Bedrooms</SelectLabel>
-                  {[1, 2, 3, 4].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>
-                      {num}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <ImageUpload
-            id="floorPlan"
-            image={images.floor || ""}
-            onChange={handleFileChange("floor")}
-            label="Floor Plan"
-          />
           <FormField id="price" label="Price" placeholder="Enter Price" />
 
           <QualitySpecsInput
@@ -207,6 +174,8 @@ export function ApartmentFormChild({
             onAdd={handleInputAdd}
             onRemove={handleRemove}
           />
+
+          {/* map */}
           <div className="my-4">
             <Label htmlFor="location" className="mb-2 text-black">
               Map
@@ -224,6 +193,39 @@ export function ApartmentFormChild({
               />
             </div>
           </div>
+
+          {/* property type */}
+          <SelectItems
+            options={["Apartment", "Vila", "Townhouse"]}
+            title="Property Type"
+            placeholder="Select Property Type"
+            value={selectValue}
+            onSelect={handleSelectChange}
+          />
+          {/* location */}
+          <SelectItems
+            options={location}
+            title="Location"
+            placeholder="Select location"
+            value={selectValue}
+            onSelect={handleSelectChange}
+          />
+          {/* sales company */}
+          <SelectItems
+            options={company}
+            title="Sales Company"
+            placeholder="Select company"
+            value={selectValue}
+            onSelect={handleSelectChange}
+          />
+          {/* sales company */}
+          <SelectItems
+            options={completionYear}
+            title="Completion Year"
+            placeholder="Select year"
+            value={selectValue}
+            onSelect={handleSelectChange}
+          />
         </div>
       </div>
 

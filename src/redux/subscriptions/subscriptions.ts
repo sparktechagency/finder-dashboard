@@ -16,7 +16,18 @@ const subscriptions = api.injectEndpoints({
         body: data,
       }),
     }),
+
+    updateSubscription: builder.mutation({
+      query: ({ _id, data }) => ({
+        url: `/package/${_id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
   }),
 });
-export const { useGetSubscriptionsQuery, useCreateSubscriptionMutation } =
-  subscriptions;
+export const {
+  useGetSubscriptionsQuery,
+  useCreateSubscriptionMutation,
+  useUpdateSubscriptionMutation,
+} = subscriptions;

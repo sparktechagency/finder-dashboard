@@ -96,12 +96,13 @@ export default function Apartment() {
                 <img
                   className="w-5 h-5"
                   src={
-                    imageUrl
-                      ? `${imageUrl}${invoice.apartmentImage[0]}`
-                      : invoice.apartmentImage[0]
+                    invoice?.apartmentImage[0]?.startsWith("http")
+                      ? invoice.apartmentImage[0]
+                      : `${imageUrl}${invoice.apartmentImage[0]}`
                   }
                   alt="pic"
                 />
+
                 {invoice.apartmentName}
               </TableCell>
               <TableCell>{invoice?.contact?.location}</TableCell>

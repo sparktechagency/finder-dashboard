@@ -15,14 +15,17 @@ interface cardData {
   month: string;
   description: string[];
   paymentType: string;
+  duration?: string | number;
 }
 export default function Premium() {
-  const { data, isLoading, isError } = useGetSubscriptionsQuery(undefined);
+  const { data, isLoading, isError, refetch } =
+    useGetSubscriptionsQuery(undefined);
   const [edit, setEdit] = useState<{
     _id?: string;
     price?: number;
     description?: string[];
     paymentType?: string;
+    duration?: string | number;
   } | null>(null);
 
   if (isLoading) {
@@ -35,12 +38,11 @@ export default function Premium() {
 
   return (
     <>
-      <div className="flex space-x-6">
-        {data?.data?.slice(0, 2).map((item: cardData) => (
+      <div className="grid grid-cols-4 space-x-6 space-y-6">
+        {data?.data?.map((item: cardData) => (
           <div
             key={item._id}
             className="bg-[#F4F4F4] rounded-lg shadow-lg px-5 pt-4 border border-[#B1B1FF] flex flex-col w-[362px] h-[520px]"
-            // Added flex flex-col and fixed height (adjust 400px as needed)
           >
             <div className="flex items-center justify-between text-[#1A1E25] ">
               <h2 className="text-xl font-semibold text-center">
@@ -53,6 +55,7 @@ export default function Premium() {
                     price: item.price,
                     description: item.description,
                     paymentType: item.paymentType,
+                    duration: item.duration,
                   })
                 }
               >
@@ -100,6 +103,7 @@ export default function Premium() {
         <DublicateSubscribeEditModal
           edit={edit}
           isOpen={!!edit}
+          refetch={refetch}
           onClose={() => setEdit(null)}
         />
       )}

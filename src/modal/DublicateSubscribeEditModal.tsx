@@ -12,17 +12,21 @@ import {
 } from "@/components/ui/select";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { IoMdCheckmarkCircle } from "react-icons/io";
-import { useCreateSubscriptionMutation } from "@/redux/subscriptions/subscriptions";
+import {
+  useCreateSubscriptionMutation,
+  useUpdateSubscriptionMutation,
+} from "@/redux/subscriptions/subscriptions";
 
 interface PackageModalProps {
   isOpen: boolean;
+  refetch?: () => void;
   onClose: () => void;
   edit?: {
     _id?: string;
     price?: number;
-    // duration: number | string;
     description?: string[];
     paymentType?: string;
+    duration?: string | number;
   };
 }
 
@@ -30,8 +34,11 @@ export default function DublicateSubscribeEditModal({
   isOpen,
   onClose,
   edit,
+  refetch,
 }: PackageModalProps) {
   const [createSubscription] = useCreateSubscriptionMutation();
+  const [updateSubscription] = useUpdateSubscriptionMutation();
+
   const [formState, setFormState] = useState({
     packageName: "",
     price: undefined as number | undefined,
@@ -43,30 +50,23 @@ export default function DublicateSubscribeEditModal({
     paymentType: "",
   });
 
-  console.log(edit);
-
   useEffect(() => {
     if (edit?._id) {
       setFormState((prev) => ({
         ...prev,
-        price: edit?.price,
-        description: Array.isArray(edit?.description)
-          ? edit?.description
-          : typeof edit?.description === "string" && edit?.description
+        price: edit.price,
+        description: Array.isArray(edit.description)
+          ? edit.description
+          : edit.description
           ? [edit.description]
           : [""],
-        paymentType: edit?.paymentType || "",
-        // optionally duration here if in edit
+        paymentType: edit.paymentType || "",
+        duration: edit.duration || "",
       }));
     }
   }, [edit]);
 
-  // const removeOffer = (index: number) => {
-  //   setFormState((prev) => ({
-  //     ...prev,
-  //     offers: prev.offers.filter((_, i) => i !== index),
-  //   }));
-  // };
+  console.log(edit);
 
   const removeOffer = (index: number) => {
     setFormState((prev) => ({
@@ -76,10 +76,12 @@ export default function DublicateSubscribeEditModal({
   };
 
   const handleAddOffer = () => {
-    if (formState.newOffer.trim()) {
+    const trimmedOffer = formState.newOffer.trim();
+    if (trimmedOffer) {
       setFormState((prev) => ({
         ...prev,
-        description: [...prev.description, prev.newOffer.trim()],
+        offers: [...prev.offers, trimmedOffer],
+        description: [...prev.description, trimmedOffer],
         newOffer: "",
         isOfferModalOpen: false,
       }));
@@ -88,156 +90,146 @@ export default function DublicateSubscribeEditModal({
 
   const onSubmit = async () => {
     const { packageName, price, offers, duration, paymentType } = formState;
-    console.log({ packageName, price, offers, duration, paymentType });
 
-    const subscriptionData = {
-      title: packageName || "Default Package",
+    const data = {
+      title: packageName,
       description: offers,
-      price: price || 0,
+      price: price,
       duration,
       paymentType,
     };
 
-    await createSubscription(subscriptionData);
-    onClose();
+    console.log(data);
+    try {
+      if (edit?._id) {
+        updateSubscription({ _id: edit._id, data: data });
+      } else {
+        await createSubscription(data).unwrap();
+      }
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+    } finally {
+      if (refetch) {
+        refetch();
+      }
+      onClose();
+    }
   };
 
   return (
     <>
-      <div className="">
-        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-          <DialogContent className="sm:max-w-lg rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
-            <DialogTitle className="text-2xl -mt-2">
-              {edit ? "Edit Subscription" : "Add Subscription"}
-            </DialogTitle>
+      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+        <DialogContent className="sm:max-w-lg rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
+          <DialogTitle className="text-2xl -mt-2">
+            {edit ? "Edit Subscription" : "Add Subscription"}
+          </DialogTitle>
 
-            {!edit && (
-              <div className="mb-4">
-                <Label htmlFor="packageName">Package Name</Label>
-                <Select
-                  value={formState.packageName}
-                  onValueChange={() =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      packageName: "Premium Plan",
-                    }))
-                  }
-                >
-                  <SelectTrigger id="packageName" className="w-full mt-1">
-                    <SelectValue placeholder="Select Package Name" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Premium Plan">Premium Plan</SelectItem>
-                    <SelectItem value="Standard Plan">Standard Plan</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
+          {(edit || isOpen) && (
             <div className="mb-4">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                type="number"
-                placeholder="Enter price"
-                value={formState?.price !== undefined ? formState?.price : ""}
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    price: Number(e.target.value),
-                  }))
+              <Label htmlFor="packageName">Package Name</Label>
+              <Select
+                value={formState.packageName}
+                onValueChange={(value) =>
+                  setFormState((prev) => ({ ...prev, packageName: value }))
                 }
-                className="mt-1 "
-              />
-            </div>
-            {/* duration */}
-            {/* <div className="mb-4">
-              <Label htmlFor="price">Duration</Label>
-              <Input
-                id="duration"
-                type="text"
-                placeholder="Enter Duration"
-                value={formState.duration}
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    duration: e.target.value,
-                  }))
-                }
-                className="mt-1 "
-              />
-            </div> */}
-            {/* paymentType */}
-            <div className="mb-4">
-              <Label htmlFor="paymentType">Payment Type</Label>
-              <Input
-                id="paymentType"
-                type="text"
-                placeholder="Enter paymentType"
-                value={formState.paymentType}
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    paymentType: e.target.value,
-                  }))
-                }
-                className="mt-1 "
-              />
-            </div>
-
-            {/* Package Offers Section */}
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2 px-1">
-                <h2 className="font-medium">Package Offers</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      isOfferModalOpen: true,
-                    }))
-                  }
-                >
-                  <FiPlusCircle className="w-6 h-6 text-orange-500" />
-                </Button>
-              </div>
-              <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-                {formState.description.map((des, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center"
-                  >
-                    <div className="flex items-center gap-2">
-                      <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
-                      <span>{des}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeOffer(index)}
-                    >
-                      <FiMinusCircle className="text-gray-500 w-5 h-5" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-6">
-              <Button
-                className="w-full py-3 text-black"
-                onClick={onSubmit}
-                style={{ backgroundColor: "#F79535", borderColor: "#188754" }}
               >
-                Submit
+                <SelectTrigger id="packageName" className="w-full mt-1">
+                  <SelectValue
+                    placeholder="Select Package Name"
+                    defaultValue={formState.packageName}
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Premium Plan">Premium Plan</SelectItem>
+                  <SelectItem value="Standard Plan">Standard Plan</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {[
+            {
+              id: "price",
+              label: "Price",
+              type: "number",
+              value: formState.price,
+            },
+            {
+              id: "duration",
+              label: "Duration",
+              type: "text",
+              value: formState.duration,
+            },
+            {
+              id: "paymentType",
+              label: "Payment Type",
+              type: "text",
+              value: formState.paymentType,
+            },
+          ].map(({ id, label, type, value }) => (
+            <div className="mb-4" key={id}>
+              <Label htmlFor={id}>{label}</Label>
+              <Input
+                id={id}
+                type={type}
+                placeholder={`Enter ${label.toLowerCase()}`}
+                value={value ?? ""}
+                onChange={(e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    [id]:
+                      type === "number"
+                        ? Number(e.target.value)
+                        : e.target.value,
+                  }))
+                }
+                className="mt-1"
+              />
+            </div>
+          ))}
+
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2 px-1">
+              <h2 className="font-medium">Package Offers</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  setFormState((prev) => ({ ...prev, isOfferModalOpen: true }))
+                }
+              >
+                <FiPlusCircle className="w-6 h-6 text-orange-500" />
               </Button>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            <div className="border border-gray-700 rounded-lg p-4 space-y-2">
+              {formState.description.map((des, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
+                    <span>{des}</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeOffer(i)}
+                  >
+                    <FiMinusCircle className="text-gray-500 w-5 h-5" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
 
-      {/* Modal for adding new offer */}
+          <Button
+            className="w-full py-3 text-black mt-6"
+            onClick={onSubmit}
+            style={{ backgroundColor: "#F79535", borderColor: "#188754" }}
+          >
+            Submit
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <Dialog
         open={formState.isOfferModalOpen}
         onOpenChange={(open) =>
