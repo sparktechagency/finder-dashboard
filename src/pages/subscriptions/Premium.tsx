@@ -8,45 +8,21 @@ import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
 import DublicateSubscribeEditModal from "@/modal/DublicateSubscribeEditModal";
 
-// const items = [
-//   {
-//     id: 1,
-//     title: "Monthly",
-//     month: "month",
-//     content: [
-//       "Up to 3 Free Listings",
-//       "Smart Management Tools",
-//       "Digitized Rental Agreements",
-//       "Rent Collection Reminders",
-//     ],
-//   },
-//   {
-//     id: 2,
-//     title: "Annually",
-//     month: "annual",
-//     content: [
-//       "Up to 8 Free Listings",
-//       "Smart Management Tools",
-//       "Digitized Rental Agreements",
-//       "Rent Collection Reminders",
-//       "Maintenance & Permissions Tracking",
-//     ],
-//   },
-// ];
-
 interface cardData {
   _id: string;
   title: string;
   price: number;
   month: string;
   description: string[];
+  paymentType: string;
 }
 export default function Premium() {
   const { data, isLoading, isError } = useGetSubscriptionsQuery(undefined);
   const [edit, setEdit] = useState<{
     _id?: string;
     price?: number;
-    description?: string;
+    description?: string[];
+    paymentType?: string;
   } | null>(null);
 
   if (isLoading) {
@@ -75,8 +51,8 @@ export default function Premium() {
                   setEdit({
                     _id: item._id,
                     price: item.price,
-                    description: item.description.join(", "),
-                    // If you want description as array, use: description: item.description
+                    description: item.description,
+                    paymentType: item.paymentType,
                   })
                 }
               >
@@ -87,7 +63,9 @@ export default function Premium() {
               <span className="text-2xl font-medium text-[#F79535]">
                 € {item?.price}
               </span>
-              <span className="text-sm text-[#1A1E25]">/ {item.month}</span>
+              <span className="text-sm text-[#1A1E25]">
+                / {item.paymentType}
+              </span>
             </div>
             <div className="mt-6 space-y-3 text-[#1A1E25] flex-grow">
               {item?.description?.map((contentItem, index) => (

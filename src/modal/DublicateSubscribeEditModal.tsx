@@ -21,7 +21,8 @@ interface PackageModalProps {
     _id?: string;
     price?: number;
     // duration: number | string;
-    description?: string;
+    description?: string[];
+    paymentType?: string;
   };
 }
 
@@ -34,29 +35,43 @@ export default function DublicateSubscribeEditModal({
   const [formState, setFormState] = useState({
     packageName: "",
     price: undefined as number | undefined,
-    description: "",
-    offers: ["120 day permission to use"],
+    description: [""],
+    offers: [""],
     isOfferModalOpen: false,
     newOffer: "",
     duration: "" as string | number,
     paymentType: "",
   });
 
+  console.log(edit);
+
   useEffect(() => {
     if (edit?._id) {
       setFormState((prev) => ({
         ...prev,
         price: edit?.price,
-        description: edit?.description || "",
+        description: Array.isArray(edit?.description)
+          ? edit?.description
+          : typeof edit?.description === "string" && edit?.description
+          ? [edit.description]
+          : [""],
+        paymentType: edit?.paymentType || "",
         // optionally duration here if in edit
       }));
     }
   }, [edit]);
 
+  // const removeOffer = (index: number) => {
+  //   setFormState((prev) => ({
+  //     ...prev,
+  //     offers: prev.offers.filter((_, i) => i !== index),
+  //   }));
+  // };
+
   const removeOffer = (index: number) => {
     setFormState((prev) => ({
       ...prev,
-      offers: prev.offers.filter((_, i) => i !== index),
+      description: prev.description.filter((_, i) => i !== index),
     }));
   };
 
@@ -64,7 +79,7 @@ export default function DublicateSubscribeEditModal({
     if (formState.newOffer.trim()) {
       setFormState((prev) => ({
         ...prev,
-        offers: [...prev.offers, prev.newOffer.trim()],
+        description: [...prev.description, prev.newOffer.trim()],
         newOffer: "",
         isOfferModalOpen: false,
       }));
@@ -86,9 +101,6 @@ export default function DublicateSubscribeEditModal({
     await createSubscription(subscriptionData);
     onClose();
   };
-
-  // In JSX, access values like formState.packageName etc.
-  // And update with setFormState(prev => ({ ...prev, packageName: newVal })) on inputs
 
   return (
     <>
@@ -139,7 +151,7 @@ export default function DublicateSubscribeEditModal({
               />
             </div>
             {/* duration */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <Label htmlFor="price">Duration</Label>
               <Input
                 id="duration"
@@ -154,7 +166,7 @@ export default function DublicateSubscribeEditModal({
                 }
                 className="mt-1 "
               />
-            </div>
+            </div> */}
             {/* paymentType */}
             <div className="mb-4">
               <Label htmlFor="paymentType">Payment Type</Label>
@@ -191,14 +203,14 @@ export default function DublicateSubscribeEditModal({
                 </Button>
               </div>
               <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-                {formState.offers.map((offer, index) => (
+                {formState.description.map((des, index) => (
                   <div
                     key={index}
                     className="flex justify-between items-center"
                   >
                     <div className="flex items-center gap-2">
                       <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
-                      <span>{offer}</span>
+                      <span>{des}</span>
                     </div>
                     <Button
                       variant="ghost"
