@@ -4,10 +4,10 @@ import { FaPlus } from "react-icons/fa6";
 import { HiOutlineMinus } from "react-icons/hi2";
 
 interface QualitySpecsInputProps {
-  specs: string[];
-  onChange: (value: string, index: number) => void;
+  specs: { [key: string]: string };
+  onChange: (value: string, key: string) => void;
   onAdd: () => void;
-  onRemove: (index: number) => void;
+  onRemove: (key: string) => void;
 }
 
 export function QualitySpecsInput({
@@ -16,27 +16,42 @@ export function QualitySpecsInput({
   onAdd,
   onRemove,
 }: QualitySpecsInputProps) {
+  const placeholderMap: { [key: string]: string } = {
+    category: "Enter category",
+    generalAmenites: "Enter general amenities",
+    connectivity: "Enter connectivity details",
+    ecoFriendly: "Enter eco-friendly features",
+    parking: "Enter parking info",
+    receational: "Enter recreational facilities",
+    accessiblity: "Enter accessibility features",
+    nearbyFacilities: "Enter nearby facilities",
+  };
   return (
     <div className="my-4">
       <div className="flex items-center justify-between mr-2 mb-1 text-black">
         <Label htmlFor="qualitySpecification" className="mb-2">
           Enter Features
         </Label>
-        <button onClick={onAdd} type="button">
+        <button onClick={onAdd} type="button" aria-label="Add feature">
           <FaPlus />
         </button>
       </div>
-      {specs.map((spec, i) => (
-        <div key={i} className="flex-col items-center">
-          <button type="button" onClick={() => onRemove(i)}>
+
+      {Object.entries(specs).map(([key, spec]) => (
+        <div key={key} className="flex items-center gap-2 mb-2">
+          <button
+            type="button"
+            onClick={() => onRemove(key)}
+            aria-label={`Remove feature ${key}`}
+          >
             <HiOutlineMinus size={22} />
           </button>
           <Input
-            id={`qualitySpecification-${i}`}
-            className="mb-1 flex-1"
+            id={`qualitySpecification-${key}`}
+            className="flex-1"
             value={spec}
-            placeholder="Enter quality"
-            onChange={(e) => onChange(e.target.value, i)}
+            placeholder={placeholderMap[key]}
+            onChange={(e) => onChange(key, e.target.value)}
           />
         </div>
       ))}

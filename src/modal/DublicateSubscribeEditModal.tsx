@@ -175,6 +175,7 @@ export default function DublicateSubscribeEditModal({
             <div className="flex justify-between items-center mb-2 px-1">
               <h2 className="font-medium">Package Offers</h2>
               <Button
+                className="cursor-pointer"
                 variant="ghost"
                 size="icon"
                 onClick={() =>
@@ -185,8 +186,8 @@ export default function DublicateSubscribeEditModal({
               </Button>
             </div>
             <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-              {formState.description.map((des, i) =>
-                des ? (
+              {formState.description.filter(Boolean).length > 0 ? (
+                formState.description.filter(Boolean).map((des, i) => (
                   <div key={i} className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
@@ -200,13 +201,15 @@ export default function DublicateSubscribeEditModal({
                       <FiMinusCircle className="text-gray-500 w-5 h-5" />
                     </Button>
                   </div>
-                ) : null
+                ))
+              ) : (
+                <span className="text-black">New Item Add Here</span>
               )}
             </div>
           </div>
 
           <Button
-            className="w-full py-3 text-black mt-6"
+            className="w-full py-3 text-black mt-6 cursor-pointer"
             onClick={onSubmit}
             style={{ backgroundColor: "#F79535", borderColor: "#188754" }}
           >

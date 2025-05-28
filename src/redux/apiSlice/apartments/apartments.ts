@@ -8,7 +8,15 @@ const apartments = api.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    createApartment: builder.mutation({
+      query: (data) => ({
+        url: "/apartment/create",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useGetApartmentsQuery } = apartments;
+export const { useGetApartmentsQuery, useCreateApartmentMutation } = apartments;

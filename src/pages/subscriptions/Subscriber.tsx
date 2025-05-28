@@ -10,7 +10,7 @@ export default function Subscriptions() {
   const [add, setAdd] = useState<boolean | null>(null);
   return (
     <>
-      <div className=" flex justify-between items-center text-black">
+      <div className=" flex justify-between items-center text-black cursor-pointer">
         <h1 className="text-2xl font-semibold ">Subscription Plans</h1>
         <div
           className=" p-4 bg-[#fdead8] flex items-center gap-2 rounded-lg cursor-pointer"
@@ -19,7 +19,7 @@ export default function Subscriptions() {
           <p>
             <GoPlus />
           </p>
-          <button className="">Add Subscription</button>
+          <button className="cursor-pointer">Add Subscription</button>
         </div>
       </div>
 

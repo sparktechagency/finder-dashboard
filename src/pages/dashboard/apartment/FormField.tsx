@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 
 interface FormFieldProps {
   id: string;
+  type: React.HTMLInputTypeAttribute;
   name?: string;
   label: string;
   placeholder: string;
@@ -12,6 +13,7 @@ interface FormFieldProps {
 
 export function FormField({
   id,
+  type,
   name,
   label,
   placeholder,
@@ -24,6 +26,7 @@ export function FormField({
         {label}
       </Label>
       <Input
+        type={type}
         id={id}
         name={name || id}
         placeholder={placeholder}

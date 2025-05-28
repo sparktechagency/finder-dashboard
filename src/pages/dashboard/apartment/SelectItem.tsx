@@ -25,11 +25,11 @@ export default function SelectItems({
 }: SelectItemsProps) {
   return (
     <div className="my-4">
-      <Label htmlFor="propertyType" className="mb-2 text-black">
+      <Label htmlFor={title} className="mb-2 text-black">
         {title}
       </Label>
       <Select value={value} onValueChange={onSelect}>
-        <SelectTrigger id="propertyType" className="w-full">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

@@ -8,13 +8,43 @@ export default function ApartmentPage() {
     floor?: string;
   }>({});
   const [imageSections, setImageSections] = useState<string[]>([]);
-  const [qualitySpecs, setQualitySpecs] = useState<string[]>([""]);
+  const [qualitySpecs, setQualitySpecs] = useState<{ [key: string]: string }>({
+    category: "",
+    generalAmenites: "",
+    connectivity: "",
+    ecoFriendly: "",
+    parking: "",
+    receational: "",
+    accessiblity: "",
+    nearbyFacilities: "",
+  });
+
+  // const handleFileChange =
+  //   (key: keyof typeof images) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const file = e.target.files?.[0];
+  //     if (!file) return;
+  //     setImages((prev) => ({ ...prev, [key]: URL.createObjectURL(file) }));
+  //   };
+
+  type FileData = {
+    url: string;
+    type: string;
+  };
+
+  const [files, setFiles] = React.useState<Record<string, FileData>>({});
 
   const handleFileChange =
-    (key: keyof typeof images) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
-      setImages((prev) => ({ ...prev, [key]: URL.createObjectURL(file) }));
+
+      setFiles((prev) => ({
+        ...prev,
+        [key]: {
+          url: URL.createObjectURL(file),
+          type: file.type,
+        },
+      }));
     };
 
   const handleImageChange = (
@@ -35,21 +65,25 @@ export default function ApartmentPage() {
     setImageSections((prev) => (prev.length < 5 ? [...prev, ""] : prev));
   };
 
-  const handleQualityChange = (value: string, index: number) => {
+  const handleQualityChange = (key: string, value: string) => {
     setQualitySpecs((prev) => {
-      const newArr = [...prev];
-      newArr[index] = value;
-      return newArr;
+      return {
+        ...prev,
+        [key]: value,
+      };
     });
   };
 
   const handleInputAdd = () => {
-    setQualitySpecs((prev) => [...prev, ""]);
+    const newKey = `feature_${Date.now()}`;
+    setQualitySpecs((prev) => ({ ...prev, [newKey]: "" }));
   };
 
-  const handleRemove = (index: number) => {
-    setQualitySpecs((item: string[]) => item.filter((_, i) => i !== index));
-    console.log(index);
+  const handleRemove = (key: string) => {
+    setQualitySpecs((prev) => {
+      const { [key]: _, ...rest } = prev; // omit the key
+      return rest;
+    });
   };
 
   return (
@@ -63,6 +97,7 @@ export default function ApartmentPage() {
       handleQualityChange={handleQualityChange}
       handleInputAdd={handleInputAdd}
       handleRemove={handleRemove}
+      files={files}
     />
   );
 }

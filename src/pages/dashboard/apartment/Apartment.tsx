@@ -66,7 +66,7 @@ export default function Apartment() {
     <>
       <div className="flex justify-end mb-3">
         <button
-          className="bg-[#fcebd9] rounded-[10px] px-5 py-2 flex items-center text-sm font-medium text-[#1f1f1f]"
+          className="bg-[#fcebd9] rounded-[10px] px-5 py-2 flex items-center text-sm font-medium text-[#1f1f1f] cursor-pointer"
           onClick={() => navigate("/apartmentForm")}
         >
           <span className="text-lg font-bold mr-2">+</span> Add Apartment

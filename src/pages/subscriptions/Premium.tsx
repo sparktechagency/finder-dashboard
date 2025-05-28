@@ -1,5 +1,4 @@
 import { IoIosCheckmark } from "react-icons/io";
-// import editL from "../../../../public/Edit.svg";
 import { useState } from "react";
 
 import { RiEditLine } from "react-icons/ri";
@@ -82,24 +81,9 @@ export default function Premium() {
                   )
               )}
             </div>
-            {/* <div className="p-3 ">
-             
-              <button className="text-lg font-semibold px-6 rounded-lg bg-[#F79535] text-[#1A1E25] w-full my-3 py-2">
-                Get Started
-              </button>
-            </div> */}
           </div>
         ))}
       </div>
-
-      {/* modal show */}
-      {/* {edit && (
-        <SubscribeEditModal
-          edit={edit}
-          isOpen={!!edit}
-          onClose={() => setEdit(null)}
-        />
-      )} */}
 
       {edit && (
         <DublicateSubscribeEditModal
