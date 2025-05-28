@@ -7,6 +7,7 @@ const subscriptions = api.injectEndpoints({
         url: "/package",
         method: "GET",
       }),
+      providesTags: [{ type: "package" }],
     }),
 
     createSubscription: builder.mutation({
@@ -15,6 +16,7 @@ const subscriptions = api.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [{ type: "package" }],
     }),
 
     updateSubscription: builder.mutation({
@@ -23,6 +25,7 @@ const subscriptions = api.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["package"],
     }),
   }),
 });

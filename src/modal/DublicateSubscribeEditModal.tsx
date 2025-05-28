@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -16,10 +15,11 @@ import {
   useCreateSubscriptionMutation,
   useUpdateSubscriptionMutation,
 } from "@/redux/subscriptions/subscriptions";
+import AddNewOffer from "@/pages/subscriptions/AddNewOffer";
+import FormInputFields from "@/pages/subscriptions/InputName";
 
 interface PackageModalProps {
   isOpen: boolean;
-  refetch?: () => void;
   onClose: () => void;
   edit?: {
     _id?: string;
@@ -34,19 +34,28 @@ export default function DublicateSubscribeEditModal({
   isOpen,
   onClose,
   edit,
-  refetch,
 }: PackageModalProps) {
+  // const { refetch } = useGetSubscriptionsQuery(undefined);
   const [createSubscription] = useCreateSubscriptionMutation();
   const [updateSubscription] = useUpdateSubscriptionMutation();
 
-  const [formState, setFormState] = useState({
+  const [formState, setFormState] = useState<{
+    packageName: string;
+    price?: number;
+    description: string[];
+    offers: string[];
+    isOfferModalOpen: boolean;
+    newOffer: string;
+    duration: string | number;
+    paymentType: string;
+  }>({
     packageName: "",
-    price: undefined as number | undefined,
-    description: [""],
-    offers: [""],
+    price: undefined,
+    description: [],
+    offers: [],
     isOfferModalOpen: false,
     newOffer: "",
-    duration: "" as string | number,
+    duration: "",
     paymentType: "",
   });
 
@@ -59,33 +68,23 @@ export default function DublicateSubscribeEditModal({
           ? edit.description
           : edit.description
           ? [edit.description]
-          : [""],
+          : [],
+        offers: Array.isArray(edit.description)
+          ? edit.description
+          : edit.description
+          ? [edit.description]
+          : [],
         paymentType: edit.paymentType || "",
         duration: edit.duration || "",
       }));
     }
   }, [edit]);
 
-  console.log(edit);
-
   const removeOffer = (index: number) => {
     setFormState((prev) => ({
       ...prev,
       description: prev.description.filter((_, i) => i !== index),
     }));
-  };
-
-  const handleAddOffer = () => {
-    const trimmedOffer = formState.newOffer.trim();
-    if (trimmedOffer) {
-      setFormState((prev) => ({
-        ...prev,
-        offers: [...prev.offers, trimmedOffer],
-        description: [...prev.description, trimmedOffer],
-        newOffer: "",
-        isOfferModalOpen: false,
-      }));
-    }
   };
 
   const onSubmit = async () => {
@@ -99,22 +98,42 @@ export default function DublicateSubscribeEditModal({
       paymentType,
     };
 
-    console.log(data);
     try {
       if (edit?._id) {
-        updateSubscription({ _id: edit._id, data: data });
+        updateSubscription({ _id: edit._id, data: data }).unwrap();
       } else {
         await createSubscription(data).unwrap();
       }
+
+      onClose();
     } catch (error) {
       console.error("Error creating subscription:", error);
-    } finally {
-      if (refetch) {
-        refetch();
-      }
-      onClose();
     }
   };
+
+  const inputFields = [
+    {
+      id: "price",
+      label: "Price",
+      type: "number",
+      value: formState.price !== undefined ? String(formState.price) : "",
+    },
+    {
+      id: "duration",
+      label: "Duration",
+      type: "text",
+      value: formState.duration !== undefined ? String(formState.duration) : "",
+    },
+    {
+      id: "paymentType",
+      label: "Payment Type",
+      type: "text",
+      value:
+        formState.paymentType !== undefined
+          ? String(formState.paymentType)
+          : "",
+    },
+  ];
 
   return (
     <>
@@ -147,46 +166,10 @@ export default function DublicateSubscribeEditModal({
             </div>
           )}
 
-          {[
-            {
-              id: "price",
-              label: "Price",
-              type: "number",
-              value: formState.price,
-            },
-            {
-              id: "duration",
-              label: "Duration",
-              type: "text",
-              value: formState.duration,
-            },
-            {
-              id: "paymentType",
-              label: "Payment Type",
-              type: "text",
-              value: formState.paymentType,
-            },
-          ].map(({ id, label, type, value }) => (
-            <div className="mb-4" key={id}>
-              <Label htmlFor={id}>{label}</Label>
-              <Input
-                id={id}
-                type={type}
-                placeholder={`Enter ${label.toLowerCase()}`}
-                value={value ?? ""}
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    [id]:
-                      type === "number"
-                        ? Number(e.target.value)
-                        : e.target.value,
-                  }))
-                }
-                className="mt-1"
-              />
-            </div>
-          ))}
+          <FormInputFields
+            inputFields={inputFields}
+            setFormState={setFormState}
+          />
 
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2 px-1">
@@ -202,21 +185,23 @@ export default function DublicateSubscribeEditModal({
               </Button>
             </div>
             <div className="border border-gray-700 rounded-lg p-4 space-y-2">
-              {formState.description.map((des, i) => (
-                <div key={i} className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
-                    <span>{des}</span>
+              {formState.description.map((des, i) =>
+                des ? (
+                  <div key={i} className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <IoMdCheckmarkCircle className="text-[#34383A] w-5 h-5" />
+                      <span>{des}</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeOffer(i)}
+                    >
+                      <FiMinusCircle className="text-gray-500 w-5 h-5" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeOffer(i)}
-                  >
-                    <FiMinusCircle className="text-gray-500 w-5 h-5" />
-                  </Button>
-                </div>
-              ))}
+                ) : null
+              )}
             </div>
           </div>
 
@@ -230,41 +215,8 @@ export default function DublicateSubscribeEditModal({
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={formState.isOfferModalOpen}
-        onOpenChange={(open) =>
-          setFormState((prev) => ({ ...prev, isOfferModalOpen: open }))
-        }
-      >
-        <DialogContent className="sm:max-w-md rounded-lg bg-[#fefefe] text-[#1A1E25] p-6">
-          <DialogTitle>Add New Offer</DialogTitle>
-          <Input
-            placeholder="Enter offer name"
-            value={formState.newOffer}
-            onChange={(e) =>
-              setFormState((prev) => ({ ...prev, newOffer: e.target.value }))
-            }
-            className="mt-4"
-          />
-          <div className="mt-6 flex justify-end gap-2">
-            <Button
-              className="w-[48%]"
-              variant="outline"
-              onClick={() =>
-                setFormState((prev) => ({ ...prev, isOfferModalOpen: false }))
-              }
-            >
-              Cancel
-            </Button>
-            <Button
-              className="w-[48%] bg-[#F79535] hover:bg-[#F79535]"
-              onClick={handleAddOffer}
-            >
-              Add
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* add new offer */}
+      <AddNewOffer formState={formState} setFormState={setFormState} />
     </>
   );
 }

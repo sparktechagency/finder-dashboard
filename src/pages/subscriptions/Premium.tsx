@@ -18,8 +18,7 @@ interface cardData {
   duration?: string | number;
 }
 export default function Premium() {
-  const { data, isLoading, isError, refetch } =
-    useGetSubscriptionsQuery(undefined);
+  const { data, isLoading, isError } = useGetSubscriptionsQuery(undefined);
   const [edit, setEdit] = useState<{
     _id?: string;
     price?: number;
@@ -71,21 +70,24 @@ export default function Premium() {
               </span>
             </div>
             <div className="mt-6 space-y-3 text-[#1A1E25] flex-grow">
-              {item?.description?.map((contentItem, index) => (
-                <div key={index} className="flex items-center">
-                  <span className="bg-[#484B51] h-4 w-4 mr-2 rounded-full">
-                    <IoIosCheckmark className="text-white" />
-                  </span>
-                  <p className="text-sm text-[#81888C]">{contentItem}</p>
-                </div>
-              ))}
+              {item?.description?.map(
+                (contentItem, index) =>
+                  contentItem && (
+                    <div key={index} className="flex items-center">
+                      <span className="bg-[#484B51] h-4 w-4 mr-2 rounded-full">
+                        <IoIosCheckmark className="text-white" />
+                      </span>
+                      <p className="text-sm text-[#81888C]">{contentItem}</p>
+                    </div>
+                  )
+              )}
             </div>
-            <div className="p-3 ">
-              {/* mt-auto pushes this div to bottom */}
+            {/* <div className="p-3 ">
+             
               <button className="text-lg font-semibold px-6 rounded-lg bg-[#F79535] text-[#1A1E25] w-full my-3 py-2">
                 Get Started
               </button>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
@@ -103,7 +105,6 @@ export default function Premium() {
         <DublicateSubscribeEditModal
           edit={edit}
           isOpen={!!edit}
-          refetch={refetch}
           onClose={() => setEdit(null)}
         />
       )}
