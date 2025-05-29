@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { ApartmentFormChild } from "./ApartmentFormChild";
 
 export default function ApartmentPage() {
-  const [images, setImages] = useState<{
-    payment?: string;
-    quality?: string;
-    floor?: string;
-  }>({});
-  const [imageSections, setImageSections] = useState<string[]>([]);
+  // const [images, setImages] = useState<{
+  //   payment?: string;
+  //   quality?: string;
+  //   floor?: string;
+  // }>({});
+  const [imageSections, setImageSections] = useState<(File | null)[]>([]);
   const [qualitySpecs, setQualitySpecs] = useState<{ [key: string]: string }>({
     category: "",
     generalAmenites: "",
@@ -51,18 +51,16 @@ export default function ApartmentPage() {
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
+    const file = e.target.files?.[0] || null;
     setImageSections((prev) => {
       const newArr = [...prev];
-      newArr[index] = url;
+      newArr[index] = file;
       return newArr;
     });
   };
 
   const addImageSection = () => {
-    setImageSections((prev) => (prev.length < 5 ? [...prev, ""] : prev));
+    setImageSections((prev) => [...prev, null]);
   };
 
   const handleQualityChange = (key: string, value: string) => {
@@ -88,7 +86,7 @@ export default function ApartmentPage() {
 
   return (
     <ApartmentFormChild
-      images={images}
+      // images={images}
       imageSections={imageSections}
       qualitySpecs={qualitySpecs}
       handleFileChange={handleFileChange}

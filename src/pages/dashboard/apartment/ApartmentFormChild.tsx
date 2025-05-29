@@ -12,14 +12,14 @@ import LocationPicker from "../map/Map";
 import { useCreateApartmentMutation } from "@/redux/apiSlice/apartments/apartments";
 
 interface ApartmentFormProps {
-  images: Record<string, string>;
+  // images: Record<string, string>;
   files: {
     [key: string]: {
       url: string;
       type?: string;
     };
   };
-  imageSections: string[];
+  imageSections: File[];
   qualitySpecs: { [key: string]: string };
 
   handleFileChange: (
@@ -64,62 +64,74 @@ export function ApartmentFormChild({
   } | null>(null);
 
   const handleSelectChange = (field: string, value: string) => {
-    console.log(field, value);
     setSelectValues((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.stopPropagation();
-  //   e.preventDefault();
-  //   const data = new FormData(e.currentTarget as HTMLFormElement);
-  //   const values = Object.fromEntries(data.entries());
+  console.log(imageSections);
 
-  //   formData.append("paymentPlan", data.get("paymentPlan"));
-
-  //   // const paymentFile = data.get("paymentPlan");
-  //   const quality = data.get("quality");
-
-  //   const contactData = {
-  //     phone: values.contact,
-  //     email: values.email,
-  //     location: values.location,
-  //   };
-
-  //   const apartmentData = {
-  //     apartmentName: values.apartmentName,
-  //     commission: values.commissionPercentage,
-  //     paymentPlanImage: paymentFile,
-  //     price: values.price,
-  //     contact: contactData,
-  //     qualitySpecificationPDF: quality,
-  //     features: qualitySpecs,
-  //     latitude: markerPosition?.lat,
-  //     longitude: markerPosition?.lng,
-  //     propertyType: selectValues.propertyType,
-  //     location: selectValues.location,
-  //     salesCompany: selectValues.salesCompany,
-  //     CompletionDate: selectValues.completionYear,
-  //   };
-
-  //   await createApartment(apartmentData);
-  // };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.stopPropagation();
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+    const values = Object.fromEntries(data.entries());
 
-    // Append any extra data not in form inputs:
+    const formData = new FormData();
+
+    // Append simple fields
+    formData.append("apartmentName", values.apartmentName as string);
+    formData.append("commission", values.commission);
+    formData.append("price", values.price as string);
+
+    // Append payment plan image
+    const paymentFile = data.get("paymentPlanImage");
+    if (paymentFile && paymentFile instanceof File) {
+      formData.append("paymentPlanImage", paymentFile);
+    }
+
+    imageSections.forEach((file) => {
+      if (file instanceof File) {
+        console.log(file);
+        formData.append("apartmentImage", file);
+      }
+    });
+
+    // Append quality specification PDF
+    const quality = data.get("quality");
+    if (quality && quality instanceof File) {
+      formData.append("qualitySpecificationPDF", quality);
+    }
+
+    // Append nested contact
+    const contactData = {
+      phone: values.contact,
+      email: values.email,
+      location: values.location,
+    };
+    formData.append("contact", JSON.stringify(contactData));
+
+    // Append features
     formData.append("features", JSON.stringify(qualitySpecs));
-    formData.append("latitude", String(markerPosition?.lat ?? ""));
-    formData.append("longitude", String(markerPosition?.lng ?? ""));
+
+    // Append coordinates
+    if (markerPosition) {
+      formData.append("latitude", markerPosition.lat.toString());
+      formData.append("longitude", markerPosition.lng.toString());
+    }
+
+    // Append select values
     formData.append("propertyType", selectValues.propertyType);
     formData.append("location", selectValues.location);
     formData.append("salesCompany", selectValues.salesCompany);
     formData.append("CompletionDate", selectValues.completionYear);
 
-    // Send formData directly to your API
-    await createApartment(formData);
+    try {
+      await createApartment(formData);
+      console.log(formData);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
@@ -130,29 +142,35 @@ export function ApartmentFormChild({
           Apartment Images
         </Label>
         <div className="flex items-center space-x-4">
-          {(imageSections.length > 0 ? imageSections : [""]).map((src, i) => (
-            <div
-              key={i}
-              className="w-24 h-24 border border-gray-300 rounded-md bg-gray-50 overflow-hidden flex items-center justify-center relative cursor-pointer"
-            >
-              {src ? (
-                <img
-                  src={src}
-                  alt={`upload-${i}`}
-                  className="h-full w-full object-cover rounded-md"
+          {(imageSections.length > 0 ? imageSections : [null]).map(
+            (file, idx) => (
+              <div
+                key={idx}
+                className="w-24 h-24 border border-gray-300 rounded-md bg-gray-50 overflow-hidden flex items-center justify-center relative cursor-pointer"
+              >
+                {file ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`upload-${idx}`}
+                    className="h-full w-full object-cover rounded-md"
+                    onLoad={(e) =>
+                      URL.revokeObjectURL((e.target as HTMLImageElement).src)
+                    } // revoke to avoid memory leaks
+                  />
+                ) : (
+                  <span className="text-gray-400">No Image</span>
+                )}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif"
+                  onChange={(e) => handleImageChange(e, idx)}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  multiple={false}
                 />
-              ) : (
-                <span className="text-gray-400">No Image</span>
-              )}
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/gif"
-                onChange={(e) => handleImageChange(e, i)}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                multiple={false}
-              />
-            </div>
-          ))}
+              </div>
+            )
+          )}
+
           <button
             type="button"
             onClick={addImageSection}
@@ -175,13 +193,13 @@ export function ApartmentFormChild({
           />
           <FormField
             type="number"
-            id="commissionPercentage"
+            id="commission"
             label="Commission Percentage"
             placeholder="Enter Commission"
           />
 
           <ImageUpload
-            id="paymentPlan"
+            id="paymentPlanImage"
             fileUrl={files.payment?.url || ""}
             fileType={files.payment?.type}
             onChange={handleFileChange("payment")}

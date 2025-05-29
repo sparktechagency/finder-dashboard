@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useChangePasswordMutation } from "@/redux/apiSlice/profile/profile";
+import toast from "react-hot-toast";
 
 type FormData = {
   currentPassword: string;
@@ -10,6 +12,7 @@ type FormData = {
 };
 
 export default function ChangePassword() {
+  const [changePassword] = useChangePasswordMutation();
   const {
     register,
     handleSubmit,
@@ -17,8 +20,11 @@ export default function ChangePassword() {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data);
+
+    await changePassword(data);
+    toast.success("change password successfull");
   };
 
   // Watch newPassword to validate confirmPassword matches

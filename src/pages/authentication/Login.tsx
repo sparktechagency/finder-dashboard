@@ -14,30 +14,33 @@ type FormData = { email: string; password: string };
 export default function Login() {
   const [login, { data, isLoading, isSuccess }] = useLoginMutation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isLoading) toast.loading("...isLoading", { id: "login-toast" });
-    else {
-      toast.dismiss("login-toast");
-      if (isSuccess && data?.data?.accessToken) {
-        toast.success("Login Successful", { id: "login-toast" });
-        localStorage.setItem("accessToken", data.data.accessToken);
-        navigate("/");
-      }
-    }
-  }, [data, isLoading, isSuccess, navigate]);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
+  useEffect(() => {
+    if (isLoading) {
+      toast.loading("Loading...", { id: "login-toast" });
+    } else {
+      toast.dismiss("login-toast");
+
+      if (isSuccess && data?.data?.accessToken) {
+        toast.success("Login Successful", { id: "login-toast" });
+        localStorage.setItem("accessToken", data.data.accessToken);
+        navigate("/");
+      } else {
+        toast.error("Login failed. Please try again.", { id: "login-toast" });
+      }
+    }
+  }, [data, isLoading, isSuccess, navigate]);
+
   const onSubmit = async (form: FormData) => {
     try {
       await login(form);
-    } catch {
-      toast.error("login failed");
+    } catch (error) {
+      console.error("Login failed:", error);
     }
   };
 

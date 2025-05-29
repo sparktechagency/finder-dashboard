@@ -14,6 +14,9 @@ import { useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useGetProfileQuery } from "@/redux/apiSlice/profile/profile";
+import Loading from "@/components/layout/shared/Loading";
+import { imageUrl } from "@/redux/api/baseApi";
 
 type ProfileFormData = {
   name: string;
@@ -21,23 +24,22 @@ type ProfileFormData = {
 };
 
 export default function Profile() {
-  const form = useForm<ProfileFormData>({
-    defaultValues: {
-      name: "",
-      email: "",
-    },
-  });
+  const { data, isLoading } = useGetProfileQuery(undefined);
 
-  const onSubmit = (data: ProfileFormData) => {
-    console.log(data);
-  };
+  const form = useForm<ProfileFormData>({});
 
   useEffect(() => {
-    form.reset({
-      name: "jahid", // from your user data
-      email: "jahid@example.com",
-    });
-  }, [form]);
+    if (data?.data) {
+      form.reset({
+        name: data.data.role,
+        email: data.data.email,
+      });
+    }
+  }, [form, data]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex justify-center items-center text-[#1A1E25]">
@@ -48,12 +50,16 @@ export default function Profile() {
               <img
                 className="w-24 h-24 rounded-full border-2 border-[#8AC2FF]"
                 alt="profile"
-                src="https://i.ibb.co/xJdQCTG/download.jpg"
+                src={
+                  data.data.profile.startsWith("http")
+                    ? data.data.profile
+                    : `${imageUrl}${data.data.profile}`
+                }
               />
             </div>
 
             <div>
-              <h3 className="font-semibold text-2xl">jahid</h3>
+              <h3 className="font-semibold text-2xl">{data?.data?.role}</h3>
             </div>
           </div>
           <div className="">
@@ -65,23 +71,22 @@ export default function Profile() {
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-9">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter Your Name" {...field} />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Your Name" {...field} readOnly />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="mt-3">
               <FormField
                 control={form.control}
                 name="email"
@@ -89,14 +94,18 @@ export default function Profile() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter Your Email" {...field} />
+                      <Input
+                        placeholder="Enter Your Email"
+                        {...field}
+                        readOnly
+                      />
                     </FormControl>
 
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </form>
+            </div>
           </Form>
         </div>
       </div>

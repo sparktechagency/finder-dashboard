@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaPlus } from "react-icons/fa6";
-import { HiOutlineMinus } from "react-icons/hi2";
 
 interface QualitySpecsInputProps {
   specs: { [key: string]: string };
@@ -14,8 +13,8 @@ export function QualitySpecsInput({
   specs,
   onChange,
   onAdd,
-  onRemove,
-}: QualitySpecsInputProps) {
+}: // onRemove,
+QualitySpecsInputProps) {
   const placeholderMap: { [key: string]: string } = {
     category: "Enter category",
     generalAmenites: "Enter general amenities",
@@ -39,13 +38,13 @@ export function QualitySpecsInput({
 
       {Object.entries(specs).map(([key, spec]) => (
         <div key={key} className="flex items-center gap-2 mb-2">
-          <button
+          {/* <button
             type="button"
             onClick={() => onRemove(key)}
             aria-label={`Remove feature ${key}`}
           >
             <HiOutlineMinus size={22} />
-          </button>
+          </button> */}
           <Input
             id={`qualitySpecification-${key}`}
             className="flex-1"

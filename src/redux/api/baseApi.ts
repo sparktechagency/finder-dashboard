@@ -18,4 +18,4 @@ export const api = createApi({
   tagTypes: ["package"],
   endpoints: () => ({}),
 });
-export const imageUrl = "http://10.0.70.188:6005/api/v1";
+export const imageUrl = "http://10.0.70.188:6005";

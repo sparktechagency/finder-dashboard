@@ -13,16 +13,10 @@ export default function LocationPicker({
   setMarkerPosition,
 }: LocationPickerProps) {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyAnWuXzxjMbe_hReDm5QEohp6P6b0q6jJ4", // your key
+    googleMapsApiKey: "",
   });
 
-  //   const [markerPosition, setMarkerPosition] = useState<{
-  //     lat: number;
-  //     lng: number;
-  //   } | null>(null);
   const [address, setAddress] = useState("");
-
-  // Reverse geocode lat/lng to address (optional)
   useEffect(() => {
     if (!markerPosition) return;
 
