@@ -36,7 +36,6 @@ export default function DublicateSubscribeEditModal({
   onClose,
   edit,
 }: PackageModalProps) {
-  // const { refetch } = useGetSubscriptionsQuery(undefined);
   const [createSubscription] = useCreateSubscriptionMutation();
   const [updateSubscription] = useUpdateSubscriptionMutation();
   console.log(edit);
@@ -62,25 +61,23 @@ export default function DublicateSubscribeEditModal({
   });
 
   useEffect(() => {
-    if (edit?._id) {
-      setFormState((prev) => ({
-        ...prev,
-        title: edit?.title,
-        price: edit.price,
-        description: Array.isArray(edit.description)
-          ? edit.description
-          : edit.description
-          ? [edit.description]
-          : [],
-        offers: Array.isArray(edit.description)
-          ? edit.description
-          : edit.description
-          ? [edit.description]
-          : [],
-        paymentType: edit.paymentType || "",
-        duration: edit.duration || "",
-      }));
-    }
+    if (!edit?._id) return;
+
+    const desc = Array.isArray(edit.description)
+      ? edit.description
+      : edit.description
+      ? [edit.description]
+      : [];
+
+    setFormState((prev) => ({
+      ...prev,
+      title: edit.title,
+      price: edit.price,
+      description: desc,
+      offers: desc,
+      paymentType: edit.paymentType ?? "",
+      duration: edit.duration ?? "",
+    }));
   }, [edit]);
 
   const removeOffer = (index: number) => {
@@ -107,7 +104,6 @@ export default function DublicateSubscribeEditModal({
       } else {
         await createSubscription(data).unwrap();
       }
-
       onClose();
     } catch (error) {
       console.error("Error creating subscription:", error);
@@ -148,7 +144,9 @@ export default function DublicateSubscribeEditModal({
 
           {(edit || isOpen) && (
             <div className="mb-4">
-              <Label htmlFor="title">Package Name</Label>
+              <Label className="mb-2" htmlFor="title">
+                Package Name
+              </Label>
               <Select
                 value={formState.title}
                 onValueChange={(value) =>

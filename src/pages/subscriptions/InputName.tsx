@@ -32,7 +32,9 @@ export default function FormInputFields({
     <>
       {inputFields.map(({ id, label, type, value }) => (
         <div className="mb-4" key={id}>
-          <Label htmlFor={id}>{label}</Label>
+          <Label className="mb-2" htmlFor={id}>
+            {label}
+          </Label>
           <Input
             id={id}
             type={type}

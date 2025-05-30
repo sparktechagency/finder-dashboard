@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import toast from "react-hot-toast";
 
 type LocationPickerProps = {
   markerPosition: { lat: number; lng: number } | null;
@@ -13,7 +14,7 @@ export default function LocationPicker({
   setMarkerPosition,
 }: LocationPickerProps) {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_API_KEY,
   });
 
   const [address, setAddress] = useState("");
@@ -43,19 +44,38 @@ export default function LocationPicker({
   };
 
   // Handle Enter key press to search location
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter" && address.trim()) {
+  //     const geocoder = new google.maps.Geocoder();
+  //     geocoder.geocode({ address: address.trim() }, (results, status) => {
+  //       if (status === "OK" && results && results[0]) {
+  //         const location = results[0].geometry.location;
+  //         setMarkerPosition({ lat: location.lat(), lng: location.lng() });
+  //         setAddress(results[0].formatted_address);
+  //       } else {
+  //         alert("Place not found");
+  //       }
+  //     });
+  //   }
+  // };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && address.trim()) {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: address.trim() }, (results, status) => {
-        if (status === "OK" && results && results[0]) {
-          const location = results[0].geometry.location;
-          setMarkerPosition({ lat: location.lat(), lng: location.lng() });
-          setAddress(results[0].formatted_address);
-        } else {
-          alert("Place not found");
+    if (e.key !== "Enter" || !address.trim()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    new google.maps.Geocoder().geocode(
+      { address: address.trim() },
+      (results, status) => {
+        if (status !== "OK" || !results?.[0]) {
+          toast.error("Place not found");
+          return;
         }
-      });
-    }
+
+        const location = results[0].geometry.location;
+        setMarkerPosition({ lat: location.lat(), lng: location.lng() });
+        setAddress(results[0].formatted_address);
+      }
+    );
   };
 
   if (loadError) return <div>Error loading map</div>;

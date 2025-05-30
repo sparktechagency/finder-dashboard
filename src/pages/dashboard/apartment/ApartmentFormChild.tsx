@@ -67,8 +67,6 @@ export function ApartmentFormChild({
     setSelectValues((prev) => ({ ...prev, [field]: value }));
   };
 
-  console.log(imageSections);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -79,10 +77,10 @@ export function ApartmentFormChild({
 
     const formData = new FormData();
 
-    // Append simple fields
-    formData.append("apartmentName", values.apartmentName as string);
-    formData.append("commission", values.commission);
-    formData.append("price", values.price as string);
+    ["apartmentName", "commission", "price"].forEach((key) => {
+      const val = values[key];
+      if (val) formData.append(key, val as string);
+    });
 
     // Append payment plan image
     const paymentFile = data.get("paymentPlanImage");
@@ -128,6 +126,7 @@ export function ApartmentFormChild({
 
     try {
       await createApartment(formData);
+      form.reset();
       console.log(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -266,7 +265,6 @@ export function ApartmentFormChild({
           />
 
           {/* map */}
-
           <LocationPicker
             markerPosition={markerPosition}
             setMarkerPosition={setMarkerPosition}
