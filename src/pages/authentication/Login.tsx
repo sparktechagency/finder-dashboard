@@ -7,16 +7,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { useLoginMutation } from "@/redux/apiSlice/auth/auth";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 type FormData = { email: string; password: string };
 
 export default function Login() {
   const [login, { isLoading }] = useLoginMutation();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>();
 
   if (isLoading) {
     toast.loading("Loading...", { id: "login" });
@@ -29,9 +28,10 @@ export default function Login() {
       localStorage.setItem("accessToken", result.data.accessToken);
       navigate("/");
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.error || "Login failed", {
-        id: "login",
-      });
+      toast.error(
+        err?.data?.message || err?.error || "Login failed. Please try again.",
+        { id: "login" }
+      );
     }
   };
 
@@ -46,36 +46,33 @@ export default function Login() {
             </p>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Label className="text-[#1A1E25] text-xl">Email</Label>
             <div>
-              <Label className="text-[#1A1E25] text-xl">Email</Label>
               <Input
-                type="email"
+                id="email"
                 placeholder="Enter your email"
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("email", { required: "Please enter your email!" })}
               />
-              {errors.email?.message && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
 
-            <div>
-              <Label className="text-[#1A1E25] text-xl">Password</Label>
+            <Label className="text-[#1A1E25] text-xl">Password</Label>
+            <div className="relative">
               <Input
-                type="password"
+                id="password"
                 placeholder="Enter your password"
+                type={`${isPasswordVisible ? "text" : "password"}`}
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("password", {
                   required: "Please input your password!",
                 })}
               />
-              {errors.password?.message && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
+              <span
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className="text-slate-400 absolute right-3 top-3 cursor-pointer"
+              >
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </span>
             </div>
 
             <div className="flex items-center justify-between mb-4">

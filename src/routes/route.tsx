@@ -19,11 +19,16 @@ import Faq from "@/pages/faq/FAQ";
 import Subscriptions from "@/pages/subscriptions/Subscriber";
 import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
 import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <PrivateRoute>
+        <App />
+      </PrivateRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <Dashboard /> },

@@ -7,17 +7,15 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "@/redux/apiSlice/auth/auth";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function ResetPasswordForm() {
   const [resetPassword, { data, isSuccess, isError }] =
     useResetPasswordMutation();
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { register, handleSubmit } = useForm<FormData>();
 
   type FormData = {
     newPassword: string;
@@ -59,34 +57,40 @@ export default function ResetPasswordForm() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label className="text-[#1A1E25] text-xl">New Password</Label>
+            <Label className="text-[#1A1E25] text-xl">New Password</Label>
+            <div className="relative">
               <Input
-                type="newPassword"
+                id="newPassword"
                 placeholder="Enter new password"
-                className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
+                type={`${isPasswordVisible ? "text" : "password"}`}
+                className="h-12 px-6  bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("newPassword", { required: true })}
               />
-              {errors.newPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  Please input new password!
-                </p>
-              )}
+
+              <span
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className="text-slate-400 absolute right-3 top-3 cursor-pointer"
+              >
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </span>
             </div>
 
-            <div>
-              <Label className="text-[#1A1E25] text-xl">Confirm Password</Label>
+            <Label className="text-[#1A1E25] text-xl">Confirm Password</Label>
+            <div className="relative">
               <Input
-                type="confirmPassword"
+                id="confirmPassword"
                 placeholder="Enter confirm password"
-                className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
+                type={`${isPasswordVisible ? "text" : "password"}`}
+                className="h-12 px-6 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("confirmPassword", { required: true })}
               />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">
-                  Please input confirm password!
-                </p>
-              )}
+
+              <span
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className="text-slate-400 absolute right-3 top-3 cursor-pointer"
+              >
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </span>
             </div>
 
             <Button
