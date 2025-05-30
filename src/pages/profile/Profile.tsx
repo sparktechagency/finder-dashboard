@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 import {
   Form,
   FormControl,
@@ -9,14 +8,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { MdOutlineModeEdit } from "react-icons/md";
 import { useEffect } from "react";
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetProfileQuery } from "@/redux/apiSlice/profile/profile";
 import Loading from "@/components/layout/shared/Loading";
 import { imageUrl } from "@/redux/api/baseApi";
+import { Edit } from "lucide-react";
 
 type ProfileFormData = {
   name: string;
@@ -24,7 +22,7 @@ type ProfileFormData = {
 };
 
 export default function Profile() {
-  const { data, isLoading } = useGetProfileQuery(undefined);
+  const { data, isLoading, isFetching } = useGetProfileQuery(undefined);
 
   const form = useForm<ProfileFormData>({});
 
@@ -41,6 +39,10 @@ export default function Profile() {
     return <Loading />;
   }
 
+  if (isFetching) {
+    return <p>data is Loading</p>;
+  }
+
   return (
     <div className="flex justify-center items-center text-[#1A1E25]">
       <div className="w-[1035px] mx-auto">
@@ -51,9 +53,9 @@ export default function Profile() {
                 className="w-24 h-24 rounded-full border-2 border-[#8AC2FF]"
                 alt="profile"
                 src={
-                  data.data.profile.startsWith("http")
-                    ? data.data.profile
-                    : `${imageUrl}${data.data.profile}`
+                  data?.data.profile.startsWith("http")
+                    ? data?.data?.profile
+                    : `${imageUrl}${data?.data?.profile}`
                 }
               />
             </div>
@@ -64,8 +66,9 @@ export default function Profile() {
           </div>
           <div className="">
             <Link to="/edit-profile">
-              <Button className=" flex items-center justify-center space-x-2 cursor-pointer w-36 text-black bg-[#fdead8] hover:bg-[#fdead8]">
-                <MdOutlineModeEdit className="text-xl mr-2" /> Edit Profile
+              <Button className=" flex items-center justify-center space-x-2 cursor-pointer h-10 w-36 text-black bg-[#fdead8] hover:bg-[#fdead8]">
+                <Edit />
+                <span className="text-base">Edit Profile</span>
               </Button>
             </Link>
           </div>

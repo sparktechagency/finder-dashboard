@@ -12,7 +12,7 @@ type FormInputFieldsProps = {
   inputFields: inputField[];
   setFormState: React.Dispatch<
     React.SetStateAction<{
-      packageName: string;
+      title: string;
       price?: number;
       description: string[];
       offers: string[];

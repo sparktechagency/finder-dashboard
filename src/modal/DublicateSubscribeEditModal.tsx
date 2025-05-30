@@ -23,6 +23,7 @@ interface PackageModalProps {
   onClose: () => void;
   edit?: {
     _id?: string;
+    title: string;
     price?: number;
     description?: string[];
     paymentType?: string;
@@ -38,9 +39,10 @@ export default function DublicateSubscribeEditModal({
   // const { refetch } = useGetSubscriptionsQuery(undefined);
   const [createSubscription] = useCreateSubscriptionMutation();
   const [updateSubscription] = useUpdateSubscriptionMutation();
+  console.log(edit);
 
   const [formState, setFormState] = useState<{
-    packageName: string;
+    title: string;
     price?: number;
     description: string[];
     offers: string[];
@@ -49,7 +51,7 @@ export default function DublicateSubscribeEditModal({
     duration: string | number;
     paymentType: string;
   }>({
-    packageName: "",
+    title: "",
     price: undefined,
     description: [],
     offers: [],
@@ -63,6 +65,7 @@ export default function DublicateSubscribeEditModal({
     if (edit?._id) {
       setFormState((prev) => ({
         ...prev,
+        title: edit?.title,
         price: edit.price,
         description: Array.isArray(edit.description)
           ? edit.description
@@ -88,10 +91,10 @@ export default function DublicateSubscribeEditModal({
   };
 
   const onSubmit = async () => {
-    const { packageName, price, offers, duration, paymentType } = formState;
+    const { title, price, offers, duration, paymentType } = formState;
 
     const data = {
-      title: packageName,
+      title,
       description: offers,
       price: price,
       duration,
@@ -145,17 +148,17 @@ export default function DublicateSubscribeEditModal({
 
           {(edit || isOpen) && (
             <div className="mb-4">
-              <Label htmlFor="packageName">Package Name</Label>
+              <Label htmlFor="title">Package Name</Label>
               <Select
-                value={formState.packageName}
+                value={formState.title}
                 onValueChange={(value) =>
-                  setFormState((prev) => ({ ...prev, packageName: value }))
+                  setFormState((prev) => ({ ...prev, title: value }))
                 }
               >
-                <SelectTrigger id="packageName" className="w-full mt-1">
+                <SelectTrigger id="title" className="w-full mt-1">
                   <SelectValue
                     placeholder="Select Package Name"
-                    defaultValue={formState.packageName}
+                    defaultValue={formState.title}
                   />
                 </SelectTrigger>
                 <SelectContent>

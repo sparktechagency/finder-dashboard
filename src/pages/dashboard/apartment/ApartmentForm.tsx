@@ -79,7 +79,7 @@ export default function ApartmentPage() {
 
   const handleRemove = (key: string) => {
     setQualitySpecs((prev) => {
-      const { [key]: _, ...rest } = prev; // omit the key
+      const { [key]: _, ...rest } = prev;
       return rest;
     });
   };
@@ -87,6 +87,7 @@ export default function ApartmentPage() {
   return (
     <ApartmentFormChild
       // images={images}
+      // @ts-expect-error imageSections prop type mismatch with ApartmentFormChild, intentional for now
       imageSections={imageSections}
       qualitySpecs={qualitySpecs}
       handleFileChange={handleFileChange}

@@ -26,7 +26,6 @@ export default function ResetPasswordForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
       toast.success("Password updated successfully");
       navigate("/login");
       window.location.reload();

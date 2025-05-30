@@ -23,10 +23,8 @@ export default function Subscriptions() {
         </div>
       </div>
 
-      <div className="flex justify-between">
-        <div className="mt-10">
-          <Premium />
-        </div>
+      <div className="mt-10 mb-26">
+        <Premium />
       </div>
 
       {/* modal show */}

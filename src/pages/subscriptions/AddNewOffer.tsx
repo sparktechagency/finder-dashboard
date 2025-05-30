@@ -5,7 +5,7 @@ import { Dialog } from "@radix-ui/react-dialog";
 
 type AddNewOfferProps = {
   formState: {
-    packageName: string;
+    title: string;
     price?: number;
     description: string[];
     offers: string[];
@@ -16,7 +16,7 @@ type AddNewOfferProps = {
   };
   setFormState: React.Dispatch<
     React.SetStateAction<{
-      packageName: string;
+      title: string;
       price?: number;
       description: string[];
       offers: string[];

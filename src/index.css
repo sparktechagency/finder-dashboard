@@ -132,3 +132,22 @@
 .default-dialog-close-button {
   display: none;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* prevent body scroll */
+}
+
+.SidebarInset {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll-auto {
+  flex-grow: 1; /* take remaining space */
+  overflow-y: auto; /* enable scrolling */
+}

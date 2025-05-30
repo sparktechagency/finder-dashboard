@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { useLoginMutation } from "@/redux/apiSlice/auth/auth";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
-
 type FormData = { email: string; password: string };
 
 export default function Login() {
-  const [login, { data, isLoading, isSuccess }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const {
     register,
@@ -20,27 +18,20 @@ export default function Login() {
     formState: { errors },
   } = useForm<FormData>();
 
-  useEffect(() => {
-    if (isLoading) {
-      toast.loading("Loading...", { id: "login-toast" });
-    } else {
-      toast.dismiss("login-toast");
-
-      if (isSuccess && data?.data?.accessToken) {
-        toast.success("Login Successful", { id: "login-toast" });
-        localStorage.setItem("accessToken", data.data.accessToken);
-        navigate("/");
-      } else {
-        toast.error("Login failed. Please try again.", { id: "login-toast" });
-      }
-    }
-  }, [data, isLoading, isSuccess, navigate]);
+  if (isLoading) {
+    toast.loading("Loading...", { id: "login" });
+  }
 
   const onSubmit = async (form: FormData) => {
     try {
-      await login(form);
-    } catch (error) {
-      console.error("Login failed:", error);
+      const result = await login(form).unwrap();
+      toast.success("Login successful", { id: "login" });
+      localStorage.setItem("accessToken", result.data.accessToken);
+      navigate("/");
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.error || "Login failed", {
+        id: "login",
+      });
     }
   };
 

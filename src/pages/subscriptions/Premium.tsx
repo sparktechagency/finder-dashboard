@@ -20,6 +20,7 @@ export default function Premium() {
   const { data, isLoading, isError } = useGetSubscriptionsQuery(undefined);
   const [edit, setEdit] = useState<{
     _id?: string;
+    title: string;
     price?: number;
     description?: string[];
     paymentType?: string;
@@ -34,9 +35,11 @@ export default function Premium() {
     return <ErrorPage />;
   }
 
+  console.log(data?.data);
+
   return (
     <>
-      <div className="grid grid-cols-4 space-x-6 space-y-6">
+      <div className="grid grid-cols-4 space-x-6 space-y-5">
         {data?.data?.map((item: cardData) => (
           <div
             key={item._id}
@@ -50,6 +53,7 @@ export default function Premium() {
                 onClick={() =>
                   setEdit({
                     _id: item._id,
+                    title: item.title,
                     price: item.price,
                     description: item.description,
                     paymentType: item.paymentType,

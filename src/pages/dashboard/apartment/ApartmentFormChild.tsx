@@ -135,7 +135,7 @@ export function ApartmentFormChild({
   };
 
   return (
-    <form className="mx-auto p-4 space-y-6" onSubmit={handleSubmit}>
+    <form className=" p-4 space-y-6" onSubmit={handleSubmit}>
       {/* Apartment Images */}
       <div>
         <Label className="block mb-2 text-black font-medium ">
@@ -309,7 +309,7 @@ export function ApartmentFormChild({
 
       <Button
         type="submit"
-        className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl"
+        className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl mb-9"
       >
         Submit
       </Button>
