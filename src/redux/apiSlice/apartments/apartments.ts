@@ -24,6 +24,13 @@ const apartments = api.injectEndpoints({
         body: data,
       }),
     }),
+
+    deleteApartment: builder.mutation({
+      query: (id) => ({
+        url: `/apartment/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
@@ -31,4 +38,5 @@ export const {
   useGetApartmentsQuery,
   useCreateApartmentMutation,
   useCreateApartmentDetailsMutation,
+  useDeleteApartmentMutation,
 } = apartments;

@@ -17,6 +17,7 @@ import {
 } from "@/redux/subscriptions/subscriptions";
 import AddNewOffer from "@/pages/subscriptions/AddNewOffer";
 import FormInputFields from "@/pages/subscriptions/InputName";
+import toast from "react-hot-toast";
 
 interface PackageModalProps {
   isOpen: boolean;
@@ -87,7 +88,20 @@ export default function DublicateSubscribeEditModal({
     }));
   };
 
+  type FormFieldKey = "price" | "duration" | "paymentType";
+
   const onSubmit = async () => {
+    if (
+      !formState.title ||
+      inputFields.some((field) => !formState[field.id as FormFieldKey]) ||
+      !formState.description ||
+      formState.description.filter(Boolean).length === 0
+    ) {
+      toast.error(
+        "Please fill in all required fields and add at least one Package Offer."
+      );
+      return;
+    }
     const { title, price, offers, duration, paymentType } = formState;
 
     const data = {

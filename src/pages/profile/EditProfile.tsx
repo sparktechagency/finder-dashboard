@@ -48,8 +48,8 @@ export default function EditProfile() {
     });
 
     if (profileData.profile) {
-      const profileUrl = profileData.profile.startsWith("http")
-        ? profileData.profile
+      const profileUrl = profileData.profile
+        ? profileData.profile.startsWith("http")
         : `${imageUrl}${profileData.profile}`;
 
       setPreviewUrl(profileUrl);
@@ -65,8 +65,6 @@ export default function EditProfile() {
       return () => URL.revokeObjectURL(url);
     }
   };
-
-  console.log(data?.data?.profile);
 
   const onSubmit = async (data: ProfileFormData) => {
     const formData = new FormData();
@@ -164,7 +162,7 @@ export default function EditProfile() {
 
               <Button
                 type="submit"
-                className="bg-[#F79535] hover:bg-[#F79535] text-black font-medium text-lg px-6 w-full mt-4 h-10"
+                className="bg-[#F79535] hover:bg-[#F79535] text-black font-medium text-lg px-6 w-full mt-4 h-10 cursor-pointer"
               >
                 Submit
               </Button>

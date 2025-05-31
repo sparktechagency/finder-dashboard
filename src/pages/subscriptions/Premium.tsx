@@ -49,18 +49,7 @@ export default function Premium() {
               <h2 className="text-xl font-semibold text-center">
                 {item.title}
               </h2>
-              <button
-                onClick={() =>
-                  setEdit({
-                    _id: item._id,
-                    title: item.title,
-                    price: item.price,
-                    description: item.description,
-                    paymentType: item.paymentType,
-                    duration: item.duration,
-                  })
-                }
-              >
+              <button onClick={() => setEdit(item)}>
                 <RiEditLine size={22} className="cursor-pointer" />
               </button>
             </div>

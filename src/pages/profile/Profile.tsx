@@ -43,6 +43,8 @@ export default function Profile() {
     return <p>data is Loading</p>;
   }
 
+  console.log(data?.data);
+
   return (
     <div className="flex justify-center items-center text-[#1A1E25]">
       <div className="w-[1035px] mx-auto">
@@ -53,9 +55,11 @@ export default function Profile() {
                 className="w-24 h-24 rounded-full border-2 border-[#8AC2FF]"
                 alt="profile"
                 src={
-                  data?.data.profile.startsWith("http")
-                    ? data?.data?.profile
-                    : `${imageUrl}${data?.data?.profile}`
+                  data?.data?.profile
+                    ? data?.data?.profile?.startsWith("http")
+                      ? data?.data?.profile
+                      : `${imageUrl}${data?.data?.profile}`
+                    : "https://i.ibb.co/xJdQCTG/download.jpg"
                 }
               />
             </div>
