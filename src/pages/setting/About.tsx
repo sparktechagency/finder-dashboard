@@ -8,16 +8,16 @@ import {
 
 export default function AboutUS() {
   const { data, isError, isLoading, refetch } = useGetAboutQuery(undefined);
-  console.log(data?.data[0]?.text);
+  data?.data[0]?.text;
   const [createAbout] = useCreateAboutMutation();
-  // console.log(createAbout);
+  // (createAbout);
 
   const editor = useRef(null);
 
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    console.log(data?.data?.text);
+    data?.data?.text;
     if (data?.data[0]?.text) {
       setContent(data?.data[0]?.text || "");
     }
@@ -32,7 +32,7 @@ export default function AboutUS() {
 
   const handleOnSave = async () => {
     const data = { text: content };
-    console.log(data);
+    data;
     await createAbout(data);
     refetch();
   };

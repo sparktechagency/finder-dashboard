@@ -35,7 +35,7 @@ export default function Premium() {
     return <ErrorPage />;
   }
 
-  console.log(data?.data);
+  data?.data;
 
   return (
     <>

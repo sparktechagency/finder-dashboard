@@ -44,17 +44,13 @@ export default function VerifyOtp() {
       oneTimeCode: otp,
     };
 
-    console.log(verifyData);
-
     await OtpVerify(verifyData).then((res) => {
       if (res?.data?.success) {
         toast.success(res?.data?.message, {
           duration: 1500,
         });
-        setTimeout(() => {
-          localStorage.setItem("resetToken", res?.data?.data);
-          navigate("/new-password");
-        }, 1500);
+
+        navigate(`/new-password?token=${res?.data?.data}`);
       } else {
         toast.error("Something went wrong otp", {
           duration: 1500,

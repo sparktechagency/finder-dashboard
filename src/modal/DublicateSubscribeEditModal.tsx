@@ -39,7 +39,7 @@ export default function DublicateSubscribeEditModal({
 }: PackageModalProps) {
   const [createSubscription] = useCreateSubscriptionMutation();
   const [updateSubscription] = useUpdateSubscriptionMutation();
-  console.log(edit);
+  edit;
 
   const [formState, setFormState] = useState<{
     title: string;

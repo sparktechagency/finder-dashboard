@@ -23,7 +23,7 @@ export default function ApartmentDetails() {
     price: "",
   });
 
-  console.log(formData);
+  formData;
 
   const handleChange = (field: string, value: string | File | null) => {
     setFormData((prev) => ({

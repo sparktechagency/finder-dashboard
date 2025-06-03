@@ -114,8 +114,18 @@ const invoices = [
   },
 ];
 
-export default function User() {
-  const [userDetails, setUserDetails] = useState(false);
+type Invoice = {
+  key: string;
+  no: string;
+  name: string;
+  plan: string;
+  duration: string;
+  price: string;
+  commision: string;
+};
+
+export default function Subscriber() {
+  const [userDetails, setUserDetails] = useState<Invoice | false>(false);
 
   const handleDelete = () => {
     Swal.fire({
@@ -162,7 +172,7 @@ export default function User() {
               <TableCell className="">{invoice.commision}%</TableCell>
               <TableCell
                 className=" cursor-pointer "
-                onClick={() => setUserDetails(true)}
+                onClick={() => setUserDetails(invoice)}
               >
                 <button className="mr-3">
                   <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />
@@ -177,7 +187,13 @@ export default function User() {
       </Table>
 
       {/* user details show */}
-      <UserModal isOpen={userDetails} onClose={() => setUserDetails(false)} />
+      {userDetails && (
+        <UserModal
+          isOpen={!!userDetails}
+          data={userDetails}
+          onClose={() => setUserDetails(false)}
+        />
+      )}
     </>
   );
 }

@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useResetPasswordMutation } from "@/redux/apiSlice/auth/auth";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function ResetPasswordForm() {
-  const [resetPassword, { data, isSuccess, isError }] =
-    useResetPasswordMutation();
+  const [resetPassword] = useResetPasswordMutation();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const token = searchParams.get("token");
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
   const { register, handleSubmit } = useForm<FormData>();
 
   type FormData = {
@@ -22,19 +25,7 @@ export default function ResetPasswordForm() {
     confirmPassword: string;
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Password updated successfully");
-      navigate("/login");
-      window.location.reload();
-    } else if (isError) {
-      toast.error("Password update failed");
-    }
-  }, [isSuccess, isError, data, navigate]);
-
   const onSubmit = async (formData: FormData) => {
-    console.log("Submitted:", formData);
-
     if (formData.newPassword !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
@@ -45,7 +36,17 @@ export default function ResetPasswordForm() {
       confirmPassword: formData.confirmPassword,
     };
 
-    await resetPassword(data).unwrap();
+    try {
+      await resetPassword({ token, data }).unwrap();
+      toast.success("reset password successfully");
+      navigate("/login");
+    } catch (error: unknown) {
+      toast.error(
+        (error as any)?.data?.message ||
+          (error as Error)?.message ||
+          "Failed to reset password"
+      );
+    }
   };
 
   return (
@@ -80,16 +81,16 @@ export default function ResetPasswordForm() {
               <Input
                 id="confirmPassword"
                 placeholder="Enter confirm password"
-                type={`${isPasswordVisible ? "text" : "password"}`}
+                type={`${isPasswordVisible2 ? "text" : "password"}`}
                 className="h-12 px-6 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("confirmPassword", { required: true })}
               />
 
               <span
-                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                onClick={() => setIsPasswordVisible2(!isPasswordVisible2)}
                 className="text-slate-400 absolute right-3 top-3 cursor-pointer"
               >
-                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                {isPasswordVisible2 ? <EyeOffIcon /> : <EyeIcon />}
               </span>
             </div>
 

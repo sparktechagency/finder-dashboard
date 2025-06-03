@@ -8,7 +8,7 @@ export default function TermsCondition() {
   const [content, setContent] = useState("");
 
   const handleOnSave = (value: string) => {
-    console.log(value);
+    value;
   };
   return (
     <>

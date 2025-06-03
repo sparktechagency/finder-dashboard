@@ -40,7 +40,7 @@ export default function SubscribeEditModal({
   const [duration, setDuration] = useState<number | string>("");
   const [paymentType, setPaymentType] = useState<string>("");
 
-  console.log(descriptions);
+  descriptions;
 
   useEffect(() => {
     if (edit?._id) {
@@ -64,7 +64,7 @@ export default function SubscribeEditModal({
 
   const onSubmit = async () => {
     // Here you can handle the submission data
-    console.log({
+    ({
       packageName,
       price,
       offers,

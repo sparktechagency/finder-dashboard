@@ -19,15 +19,13 @@ const auth = api.injectEndpoints({
     }),
 
     resetPassword: builder.mutation({
-      query: (data) => {
-        const resetToken = localStorage.getItem("resetToken");
-        console.log(resetToken);
+      query: ({ token, data }) => {
         return {
           url: "/auth/reset-password",
           method: "POST",
           body: data,
           headers: {
-            Authorization: `${resetToken}`,
+            Authorization: token,
           },
         };
       },

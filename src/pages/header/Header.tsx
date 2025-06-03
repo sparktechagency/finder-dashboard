@@ -1,3 +1,6 @@
+import Loading from "@/components/layout/shared/Loading";
+import { imageUrl } from "@/redux/api/baseApi";
+import { useGetProfileQuery } from "@/redux/apiSlice/profile/profile";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const path = [
@@ -18,10 +21,15 @@ const path = [
 ];
 
 export default function Header() {
+  const { data, isLoading } = useGetProfileQuery(undefined);
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const currentPathName = path.find((item) => item.path === currentPath);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <header
       className={`flex justify-between h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear
@@ -43,10 +51,14 @@ export default function Header() {
         >
           <img
             className="rounded-full w-10 h-10 border-2 border-[#8AC2FF]"
-            src="https://i.ibb.co/xJdQCTG/download.jpg"
+            src={
+              data?.data?.profile?.startsWith("http")
+                ? data?.data?.profile
+                : `${imageUrl}${data?.data?.profile}`
+            }
             alt="pic"
           />
-          <div>Mostain Billah</div>
+          <div>{data?.data?.name}</div>
         </div>
       </div>
     </header>

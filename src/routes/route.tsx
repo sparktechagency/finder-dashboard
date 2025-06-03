@@ -13,13 +13,13 @@ import Profile from "@/pages/profile/Profile";
 import EditProfile from "@/pages/profile/EditProfile";
 import ChangePassword from "@/pages/profile/ChangePassword";
 import Dashboard from "@/pages/dashboard/dashboard/Dashboard";
-import User from "@/pages/dashboard/dashboard/User";
 import Apartment from "@/pages/dashboard/apartment/Apartment";
 import Faq from "@/pages/faq/FAQ";
 import Subscriptions from "@/pages/subscriptions/Subscriber";
 import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
 import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
 import PrivateRoute from "./PrivateRoute";
+import Subscriber from "@/pages/dashboard/dashboard/Subscriber";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <Dashboard /> },
-      { path: "Subscriber", element: <User /> },
+      { path: "Subscriber", element: <Subscriber /> },
       { path: "ApartmentForm", element: <ApartmentForm /> },
 
       { path: "apartment", element: <Apartment /> },

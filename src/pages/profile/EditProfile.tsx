@@ -48,8 +48,8 @@ export default function EditProfile() {
     });
 
     if (profileData.profile) {
-      const profileUrl = profileData.profile
-        ? profileData.profile.startsWith("http")
+      const profileUrl = profileData.profile.startsWith("http")
+        ? profileData.profile
         : `${imageUrl}${profileData.profile}`;
 
       setPreviewUrl(profileUrl);

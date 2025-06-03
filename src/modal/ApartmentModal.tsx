@@ -53,16 +53,14 @@
 
 import Modal from "./Modal";
 
-interface ApartmentContact {
-  location: string;
-  // add other contact fields if needed
-}
-
 interface ApartmentData {
-  apartmentName: string;
-  code: string;
-  price: string | number;
-  contact: ApartmentContact;
+  key: string;
+  no: string;
+  name: string;
+  plan: string;
+  duration: string;
+  price: string;
+  commision: string;
 }
 
 interface dataDetailProps {
@@ -75,8 +73,7 @@ const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
   if (!data) {
     return null;
   }
-  const { apartmentName, code, price, contact } = data;
-  const { location } = contact;
+  const { name, price, duration } = data;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -88,16 +85,16 @@ const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
         </div>
         <div className="grid grid-cols-2 py-2 mt-4">
           <span className="font-semibold capitalize">Apartment Name :</span>
-          <span>{apartmentName}</span>
+          <span>{name}</span>
         </div>
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize">Location : </span>
-          <span>{location}</span>
+          <span>{duration}</span>
         </div>
-        <div className="grid grid-cols-2 py-2">
+        {/* <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize">Apartment Code :</span>
           <span>{code || 5678}</span>
-        </div>
+        </div> */}
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize"> Price : </span>
           <span>{price}</span>

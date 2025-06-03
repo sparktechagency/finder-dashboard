@@ -90,7 +90,7 @@ export function ApartmentFormChild({
 
     imageSections.forEach((file) => {
       if (file instanceof File) {
-        console.log(file);
+        file;
         formData.append("apartmentImage", file);
       }
     });
@@ -127,7 +127,7 @@ export function ApartmentFormChild({
     try {
       await createApartment(formData);
       form.reset();
-      console.log(formData);
+      formData;
     } catch (error) {
       console.error("Error submitting form:", error);
     }
