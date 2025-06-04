@@ -1,3 +1,4 @@
+import Loading from "@/components/layout/shared/Loading";
 import {
   Table,
   TableBody,
@@ -6,113 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { invoices } from "@/demoData/demoData";
 import UserModal from "@/modal/ApartmentModal";
+import { useGetSubscriberQuery } from "@/redux/apiSlice/subscriber/subscriber";
 import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
-
-const invoices = [
-  {
-    key: "1",
-    no: "#24721",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "2",
-    no: "#26552",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "3",
-    no: "#24563",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "4",
-    no: "#2424",
-    name: "Dr. Anna KOWALSKA",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "5",
-    no: "#247865",
-    name: "Dr. Michael O'CONNOR",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "6",
-    no: "#24456",
-    name: "Dr. Yasmin AL-FARSI",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "7",
-    no: "#24727",
-    name: "Dr. Leila BEN AMAR",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "8",
-    no: "#24578",
-    name: "Dr. Elena PETROVA",
-    plan: "Monthly",
-    duration: "Year",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "9",
-    no: "#2499",
-    name: "Dr. Sergei IVANOV",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "10",
-    no: "#242310",
-    name: "Dr. Sofia OLIVEIRA",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-    commision: "5",
-  },
-  {
-    key: "11",
-    no: "#249811",
-    name: "Dr. Ahmed KHAN",
-    plan: "Monthly",
-    duration: "Year",
-    price: "23",
-    commision: "5",
-  },
-];
 
 type Invoice = {
   key: string;
@@ -125,6 +26,8 @@ type Invoice = {
 };
 
 export default function Subscriber() {
+  const { data: subscriber, isLoading } = useGetSubscriberQuery(undefined);
+  console.log(subscriber?.data);
   const [userDetails, setUserDetails] = useState<Invoice | false>(false);
 
   const handleDelete = () => {
@@ -146,10 +49,14 @@ export default function Subscriber() {
       }
     });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <Table>
-        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
         <TableHeader className="">
           <TableRow className="bg-[#F6F6F6] h-12 font-bold">
             <TableHead className="">Serial ID</TableHead>

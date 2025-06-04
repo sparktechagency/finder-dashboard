@@ -51,16 +51,16 @@
 
 // export default dataModal;
 
+import { imageUrl } from "@/redux/api/baseApi";
 import Modal from "./Modal";
 
 interface ApartmentData {
-  key: string;
-  no: string;
-  name: string;
-  plan: string;
-  duration: string;
+  _id: string;
+  apartmentName: string;
+  apartmentImage: string;
+  location: string;
   price: string;
-  commision: string;
+  commission: string;
 }
 
 interface dataDetailProps {
@@ -70,10 +70,11 @@ interface dataDetailProps {
 }
 
 const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
+  console.log(data);
   if (!data) {
     return null;
   }
-  const { name, price, duration } = data;
+  const { apartmentName, price, location, apartmentImage, commission } = data;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -85,16 +86,26 @@ const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
         </div>
         <div className="grid grid-cols-2 py-2 mt-4">
           <span className="font-semibold capitalize">Apartment Name :</span>
-          <span>{name}</span>
+          <span>{apartmentName}</span>
+        </div>
+        <div className="grid grid-cols-2 py-2 mt-">
+          <span className="font-semibold capitalize">Apartment Image :</span>
+          <img
+            src={
+              apartmentImage[0]?.startsWith("http")
+                ? apartmentImage[0]
+                : `${imageUrl}${apartmentImage}`
+            }
+          />
         </div>
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize">Location : </span>
-          <span>{duration}</span>
+          <span>{location}</span>
         </div>
-        {/* <div className="grid grid-cols-2 py-2">
-          <span className="font-semibold capitalize">Apartment Code :</span>
-          <span>{code || 5678}</span>
-        </div> */}
+        <div className="grid grid-cols-2 py-2">
+          <span className="font-semibold capitalize">Commission :</span>
+          <span>{commission}%</span>
+        </div>
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize"> Price : </span>
           <span>{price}</span>

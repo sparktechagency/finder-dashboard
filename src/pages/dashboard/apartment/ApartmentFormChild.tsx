@@ -10,6 +10,7 @@ import SelectItems from "./SelectItem";
 import { company, completionYear, location } from "./Allname";
 import LocationPicker from "../map/Map";
 import { useCreateApartmentMutation } from "@/redux/apiSlice/apartments/apartments";
+import toast from "react-hot-toast";
 
 interface ApartmentFormProps {
   // images: Record<string, string>;
@@ -82,15 +83,17 @@ export function ApartmentFormChild({
       if (val) formData.append(key, val as string);
     });
 
+    // company name
+    const companyName = data.get("companyName") as string;
+    formData.append("companyName", companyName);
     // Append payment plan image
-    const paymentFile = data.get("paymentPlanImage");
+    const paymentFile = data.get("paymentPlanPDF");
     if (paymentFile && paymentFile instanceof File) {
-      formData.append("paymentPlanImage", paymentFile);
+      formData.append("paymentPlanPDF", paymentFile);
     }
 
     imageSections.forEach((file) => {
       if (file instanceof File) {
-        file;
         formData.append("apartmentImage", file);
       }
     });
@@ -105,8 +108,9 @@ export function ApartmentFormChild({
     const contactData = {
       phone: values.contact,
       email: values.email,
-      location: values.location,
+      companyName: values.companyName,
     };
+    console.log(contactData);
     formData.append("contact", JSON.stringify(contactData));
 
     // Append features
@@ -126,8 +130,8 @@ export function ApartmentFormChild({
 
     try {
       await createApartment(formData);
-      form.reset();
-      formData;
+      toast.success("create successfully");
+      // form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -184,6 +188,8 @@ export function ApartmentFormChild({
       <div className="grid grid-cols-2 gap-6">
         {/* Left Column */}
         <div>
+          {/* company name */}
+
           <FormField
             type="text"
             id="apartmentName"
@@ -198,12 +204,13 @@ export function ApartmentFormChild({
           />
 
           <ImageUpload
-            id="paymentPlanImage"
+            id="paymentPlanPDF"
             fileUrl={files.payment?.url || ""}
             fileType={files.payment?.type}
             onChange={handleFileChange("payment")}
             label="Payment Plan"
-            accept="image/jpeg,image/png,image/gif"
+            // accept="image/jpeg,image/png,image/gif"
+            accept="application/pdf"
           />
 
           <ImageUpload
@@ -238,9 +245,9 @@ export function ApartmentFormChild({
               />
               <FormField
                 type="text"
-                id="location"
-                label="Location"
-                placeholder="Enter Location"
+                id="companyName"
+                label="Company Name"
+                placeholder="Enter company name"
               />
             </div>
           )}
@@ -272,7 +279,7 @@ export function ApartmentFormChild({
 
           {/* property type */}
           <SelectItems
-            options={["Apartment", "Vila", "Townhouse"]}
+            options={["Apartment", "Villa", "Townhouse"]}
             title="Property Type"
             placeholder="Select Property Type"
             value={selectValues.propertyType}

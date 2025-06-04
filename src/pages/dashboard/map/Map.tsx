@@ -95,6 +95,7 @@ export default function LocationPicker({
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         className="mb-2"
+        required
       />
 
       <div style={{ height: "300px", width: "100%" }}>

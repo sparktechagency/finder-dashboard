@@ -1,37 +1,39 @@
 import user from "../../../../public/card/user.svg";
-// import service from "../../../../public/card/services.svg";
 import earn from "../../../../public/card/earning.svg";
-const data = [
-  {
-    icon: <img src={user} alt="total" />,
-    title: "Total Agency",
-    date: "13 NOV, 2024",
-    count: "80",
-    total: "20550",
-    daliy: "29",
-  },
-  {
-    icon: <img src={user} alt="total" />,
-    title: "Total Apartment",
-    date: "13 NOV, 2024",
-    count: "820",
-    total: "S109558",
-    daliy: "1492tn",
-  },
-  {
-    icon: <img src={earn} alt="total" />,
-    title: "Total Income for Subscriptions",
-    date: "13 NOV, 2024",
-    count: "8200",
-    total: "SYP109558",
-    daliy: "1392tn",
-  },
-];
+import { useGetStaticsQuery } from "@/redux/apiSlice/dashboard/dashboard";
+import Loading from "@/components/layout/shared/Loading";
 
 const Card = () => {
+  const { data, isLoading } = useGetStaticsQuery(undefined);
+  const staticsData = data?.data;
+
+  const statics = [
+    {
+      icon: <img src={user} alt="total" />,
+      title: "Total Agency",
+      date: "13 NOV, 2024",
+      count: staticsData?.result || 0,
+    },
+    {
+      icon: <img src={user} alt="total" />,
+      title: "Total Apartment",
+      date: "13 NOV, 2024",
+      count: staticsData?.apartment || 0,
+    },
+    {
+      icon: <img src={earn} alt="total" />,
+      title: "Total Income for Subscriptions",
+      date: "13 NOV, 2024",
+      count: staticsData?.totalPrice || 0,
+    },
+  ];
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
     <div className="grid grid-cols-3 gap-5 ">
-      {data.map((item, index) => (
+      {statics.map((item, index) => (
         <div
           key={index}
           className="rounded-2xl w-full gap-4 bg-[#F6F6F6] py-5 px-5"

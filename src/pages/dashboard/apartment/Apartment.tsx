@@ -27,6 +27,7 @@ interface ApartmentData {
   commission: string;
   price: number;
   code: string;
+  location: string;
   contact: {
     location: string;
   };
@@ -39,6 +40,7 @@ export default function Apartment() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
 
+  console.log(data?.data);
   const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -111,7 +113,7 @@ export default function Apartment() {
 
                 {invoice.apartmentName}
               </TableCell>
-              <TableCell>{invoice?.contact?.location}</TableCell>
+              <TableCell>{invoice.location}</TableCell>
               <TableCell className="pl-8">{invoice.code || "3434"}</TableCell>
               <TableCell className="pl-8">{invoice.commission}%</TableCell>
               <TableCell className="">€{invoice.price}</TableCell>
