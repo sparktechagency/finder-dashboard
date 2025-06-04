@@ -8,7 +8,14 @@ const subscriber = api.injectEndpoints({
         method: "GET",
       }),
     }),
+
+    deleteSubscriber: builder.mutation({
+      query: (id) => ({
+        url: `/dashboard/subscriber/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetSubscriberQuery } = subscriber;
+export const { useGetSubscriberQuery, useDeleteSubscriberMutation } = subscriber;

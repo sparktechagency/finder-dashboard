@@ -12,7 +12,7 @@ export default function Dashboard() {
       <div className="col-span-8">
         <Chart />
       </div>
-      <div className="">
+      <div className="mt-2">
         <SellerChart />
       </div>
     </div>

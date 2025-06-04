@@ -1,12 +1,16 @@
-import { imageUrl } from "@/redux/api/baseApi";
 import Modal from "./Modal";
 
 interface ApartmentData {
-  _id: string;
-  apartmentName: string;
-  apartmentImage: string;
-  location: string;
-  price: number;
+  user: {
+    name: string;
+  };
+  package: {
+    paymentType: string;
+    duration: string;
+  };
+  remaining: string;
+
+  price: string;
   commission: string;
 }
 
@@ -16,44 +20,38 @@ interface dataDetailProps {
   onClose: () => void;
 }
 
-const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
+const SubscriberModal = ({ isOpen, onClose, data }: dataDetailProps) => {
+  console.log(data);
   if (!data) {
     return null;
   }
-
-  console.log(data);
-  const { apartmentName, price, location, apartmentImage, commission } = data;
+  const { price, remaining, user, package: pkg } = data;
+  const { name } = user;
+  const { paymentType, duration } = pkg;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="bg-[#fefefe] p-6 rounded-xl w-[600px]">
         <div className="flex justify-between items-center -mt-2">
           <h2 className="text-xl font-semibold text-[#1A1E25]">
-            Apartment Details
+            Subscriber Details
           </h2>
         </div>
         <div className="grid grid-cols-2 py-2 mt-4">
-          <span className="font-semibold capitalize">Apartment Name :</span>
-          <span>{apartmentName}</span>
+          <span className="font-semibold capitalize">User Name :</span>
+          <span>{name}</span>
         </div>
         <div className="grid grid-cols-2 py-2 mt-">
-          <span className="font-semibold capitalize">Apartment Image :</span>
-          <img
-            className="w-20 h-12"
-            src={
-              apartmentImage[0]?.startsWith("http")
-                ? apartmentImage[0]
-                : `${imageUrl}${apartmentImage[0]}`
-            }
-          />
+          <span className="font-semibold capitalize">Plan Type :</span>
+          <span>{paymentType}</span>
         </div>
         <div className="grid grid-cols-2 py-2">
-          <span className="font-semibold capitalize">Location : </span>
-          <span>{location}</span>
+          <span className="font-semibold capitalize">duration : </span>
+          <span>{duration}</span>
         </div>
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize">Commission :</span>
-          <span>{commission}%</span>
+          <span>{remaining}%</span>
         </div>
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize"> Price : </span>
@@ -64,4 +62,4 @@ const dataModal = ({ isOpen, onClose, data }: dataDetailProps) => {
   );
 };
 
-export default dataModal;
+export default SubscriberModal;

@@ -7,30 +7,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { invoices } from "@/demoData/demoData";
-import UserModal from "@/modal/ApartmentModal";
-import { useGetSubscriberQuery } from "@/redux/apiSlice/subscriber/subscriber";
+import SubscriberModal from "@/modal/SubscriberModal";
+
+import {
+  useDeleteSubscriberMutation,
+  useGetSubscriberQuery,
+} from "@/redux/apiSlice/subscriber/subscriber";
 import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
-type Invoice = {
-  key: string;
-  no: string;
-  name: string;
-  plan: string;
-  duration: string;
+type item = {
+  user: {
+    name: string;
+  };
+  package: {
+    paymentType: string;
+    duration: string;
+  };
+  remaining: string;
+
   price: string;
-  commision: string;
+  commission: string;
 };
 
 export default function Subscriber() {
-  const { data: subscriber, isLoading } = useGetSubscriberQuery(undefined);
-  console.log(subscriber?.data);
-  const [userDetails, setUserDetails] = useState<Invoice | false>(false);
+  const {
+    data: subscriber,
+    isLoading,
+    refetch,
+  } = useGetSubscriberQuery(undefined);
+  const [deleteSubscriber] = useDeleteSubscriberMutation();
+  const [userDetails, setUserDetails] = useState<item | false>(false);
 
-  const handleDelete = () => {
+  const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -41,6 +52,8 @@ export default function Subscriber() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        deleteSubscriber(id);
+        refetch();
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -69,22 +82,24 @@ export default function Subscriber() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.key} className="">
-              <TableCell className="font-medium p-3">{invoice.no}</TableCell>
-              <TableCell>{invoice.name}</TableCell>
-              <TableCell>{invoice.plan}</TableCell>
-              <TableCell className="">{invoice.duration}</TableCell>
-              <TableCell className="">€{invoice.price}</TableCell>
-              <TableCell className="">{invoice.commision}%</TableCell>
+          {subscriber?.data?.map((item: any) => (
+            <TableRow key={item._id} className="">
+              <TableCell className="font-medium p-3">
+                #{item?._id.slice(0, 4)}
+              </TableCell>
+              <TableCell>{item?.user?.name}</TableCell>
+              <TableCell>{item?.package?.paymentType}</TableCell>
+              <TableCell className="">{item?.package?.duration}</TableCell>
+              <TableCell className="">€{item.price}</TableCell>
+              <TableCell className="">{item.remaining}%</TableCell>
               <TableCell
                 className=" cursor-pointer "
-                onClick={() => setUserDetails(invoice)}
+                onClick={() => setUserDetails(item)}
               >
-                <button className="mr-3">
+                <button className="mr-3 cursor-pointer">
                   <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />
                 </button>
-                <button onClick={handleDelete}>
+                <button onClick={() => handleDelete(item?._id)}>
                   <RiDeleteBin6Line className=" text-[22px] cursor-pointer text-red-400" />
                 </button>
               </TableCell>
@@ -95,7 +110,7 @@ export default function Subscriber() {
 
       {/* user details show */}
       {userDetails && (
-        <UserModal
+        <SubscriberModal
           isOpen={!!userDetails}
           data={userDetails}
           onClose={() => setUserDetails(false)}

@@ -22,7 +22,7 @@ import { imageUrl } from "@/redux/api/baseApi";
 
 interface ApartmentData {
   _id: string;
-  paymentPlanImage: string;
+  apartmentImage: string;
   apartmentName: string;
   commission: string;
   price: number;
@@ -40,7 +40,6 @@ export default function Apartment() {
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
 
-  console.log(data?.data);
   const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -104,9 +103,11 @@ export default function Apartment() {
                 <img
                   className="w-5 h-5"
                   src={
-                    invoice?.paymentPlanImage?.startsWith("http")
-                      ? invoice.paymentPlanImage
-                      : `${imageUrl}${invoice.paymentPlanImage}`
+                    invoice.apartmentImage
+                      ? invoice?.apartmentImage[0]?.startsWith("http")
+                        ? invoice?.apartmentImage[0]
+                        : `${imageUrl}${invoice?.apartmentImage[0]}`
+                      : ""
                   }
                   alt="pic"
                 />
