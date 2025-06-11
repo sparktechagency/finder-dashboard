@@ -1,177 +1,107 @@
-import { Label } from "@/components/ui/label";
-
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useState } from "react";
-import { useCreateApartmentDetailsMutation } from "@/redux/apiSlice/apartments/apartments";
-import toast from "react-hot-toast";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+
+import { useGetApartmentsDetailsQuery } from "@/redux/apiSlice/apartments/apartments";
+import Loading from "@/components/layout/shared/Loading";
+import ErrorPage from "@/error/ErrorPage";
+import ApartmentDetailsModal from "@/modal/ApartmentDetailsModal";
+
+interface ApartmentData {
+  _id: string;
+  apartmentImage: string;
+  floorPlan: string;
+  badSize: string;
+  seeView: boolean;
+  price: number;
+}
 
 export default function ApartmentDetails() {
-  const [createApartmentDetails] = useCreateApartmentDetailsMutation();
-  const [formData, setFormData] = useState({
-    apartmentId: "",
-    floorPlan: "",
-    badSize: "",
-    price: "",
-  });
+  const { data, isFetching, isError, isLoading } =
+    useGetApartmentsDetailsQuery(undefined);
 
-  formData;
+  const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
 
-  const handleChange = (field: string, value: string | File | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const details = data?.data?.apartments[0]?.floorPlans;
+  console.log(details);
 
-  const [image, setImage] = useState<File | null>(null);
+  if (isLoading || isFetching) {
+    return <Loading />;
+  }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setImage(file);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { price, badSize } = formData;
-
-    const priceNum = Number(price);
-    const badSizeNum = Number(badSize);
-
-    if (!formData.apartmentId) return toast.error("Apartment ID is required");
-    if (isNaN(priceNum)) return toast.error("Price must be a number");
-    if (isNaN(badSizeNum)) return toast.error("Bad size must be a number");
-
-    const formDataToSend = new FormData();
-
-    formDataToSend.append("apartmentId", formData.apartmentId);
-    formDataToSend.append("floorPlan", formData.floorPlan || "");
-    formDataToSend.append("price", price.toString());
-    formDataToSend.append("badSize", badSize.toString());
-    if (image) {
-      formDataToSend.append("floorPlanImage", image);
-    }
-
-    try {
-      await createApartmentDetails(formDataToSend);
-      toast.success("Create Successfully");
-      setFormData({ apartmentId: "", floorPlan: "", badSize: "", price: "" });
-    } catch {
-      toast.error("Post failed");
-    }
-  };
-
+  if (isError) {
+    return <ErrorPage />;
+  }
   return (
-    <div className="min-h-screen mt-[100px]">
-      <form className="p-4 space-y-6" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-6">
-          {/* Left Column */}
-          <div>
-            <Label htmlFor="floorPlan" className="mb-2 text-black">
-              Floor Plan
-            </Label>
-            <Select
-              value={formData.floorPlan}
-              onValueChange={(val) => handleChange("floorPlan", val)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Enter floor plan" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {["A12", "A2", "A5"].map((num) => (
-                    <SelectItem key={num} value={num}>
-                      {num}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+    <>
+      <Table>
+        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
+        <TableHeader>
+          <TableRow className="bg-[#F6F6F6] h-12">
+            <TableHead className="w-[100px] rounded-tl-lg">Serial ID</TableHead>
+            <TableHead>Apartment Name</TableHead>
 
-            <div className="mt-4">
-              <Label htmlFor="badSize" className="mb-2 text-black">
-                Number of Bed
-              </Label>
-              <Input
-                type="number"
-                placeholder="Enter Bed Number"
-                value={formData.badSize}
-                onChange={(e) => handleChange("badSize", e.target.value)}
-              />
-            </div>
-          </div>
+            <TableHead className="">Bad Size</TableHead>
+            <TableHead className="">Toggle Type</TableHead>
+            <TableHead className="">Price</TableHead>
+            <TableHead className="rounded-tr-lg">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {details?.map((invoice: ApartmentData) => (
+            <TableRow key={invoice._id} className="">
+              <TableCell className="font-medium p-3">
+                #{invoice?._id.slice(0, 4)}
+              </TableCell>
+              <TableCell className="flex items-center gap-2">
+                {/* <img
+                  className="w-5 h-5"
+                  src={
+                    invoice.apartmentImage
+                      ? invoice?.apartmentImage[0]?.startsWith("http")
+                        ? invoice?.apartmentImage[0]
+                        : `${imageUrl}${invoice?.apartmentImage[0]}`
+                      : ""
+                  }
+                  alt="pic"
+                /> */}
 
-          {/* Right Column */}
-          <div>
-            <div className="mb-2">
-              <Label htmlFor="id" className="text-black mb-2">
-                Apartment Id
-              </Label>
-              <Input
-                type="text"
-                placeholder="Enter id"
-                value={formData.apartmentId}
-                onChange={(e) => handleChange("apartmentId", e.target.value)}
-              />
-            </div>
-            <div className="">
-              <Label htmlFor="price" className="mb-2 text-black">
-                Price
-              </Label>
-              <Input
-                type="number"
-                placeholder="Enter Price"
-                value={formData.price}
-                onChange={(e) => handleChange("price", e.target.value)}
-              />
-            </div>
+                {invoice.floorPlan}
+              </TableCell>
 
-            <Label htmlFor="floorPlanFile" className="mt-2 text-black">
-              Floor Image
-            </Label>
-            <input
-              id="file"
-              className="hidden"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-            <div
-              className="flex justify-center items-center border border-gray-300 mt-3 rounded cursor-pointer"
-              onClick={() => document.getElementById("file")?.click()}
-            >
-              {image ? (
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt="preview"
-                  className="w-12 h-12 py-1"
-                  onLoad={(e) =>
-                    URL.revokeObjectURL((e.target as HTMLImageElement).src)
-                  } // clean up
-                />
-              ) : (
-                <span className="text-4xl py-2">+</span>
-              )}
-            </div>
-          </div>
-        </div>
+              <TableCell className="pl-8">{invoice.badSize}</TableCell>
+              <TableCell className="pl-8">
+                {invoice.seeView === false ? "No" : "YES"}
+              </TableCell>
+              <TableCell className="">€{invoice.price}</TableCell>
+              <TableCell className=" cursor-pointer ">
+                <button
+                  className="mr-3 cursor-pointer"
+                  onClick={() => setUserDetails(invoice)}
+                >
+                  <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />
+                </button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-        <Button
-          type="submit"
-          className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl cursor-pointer"
-        >
-          Submit
-        </Button>
-      </form>
-    </div>
+      {/* user details show */}
+      {userDetails && (
+        <ApartmentDetailsModal
+          isOpen={!!userDetails}
+          data={userDetails}
+          onClose={() => setUserDetails(null)}
+        />
+      )}
+    </>
   );
 }

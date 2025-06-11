@@ -8,6 +8,12 @@ const apartments = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    getApartmentsDetails: builder.query({
+      query: () => ({
+        url: "/floor",
+        method: "GET",
+      }),
+    }),
 
     createApartment: builder.mutation({
       query: (data) => ({
@@ -17,7 +23,7 @@ const apartments = api.injectEndpoints({
       }),
     }),
 
-    createApartmentDetails: builder.mutation({
+    createApartmentFloor: builder.mutation({
       query: (data) => ({
         url: "/floor/create",
         method: "POST",
@@ -36,7 +42,8 @@ const apartments = api.injectEndpoints({
 
 export const {
   useGetApartmentsQuery,
+  useGetApartmentsDetailsQuery,
   useCreateApartmentMutation,
-  useCreateApartmentDetailsMutation,
+  useCreateApartmentFloorMutation,
   useDeleteApartmentMutation,
 } = apartments;

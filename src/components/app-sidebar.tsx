@@ -54,6 +54,11 @@ const data = {
         },
         {
           icon: MdRoofing,
+          title: "Apartment Create",
+          url: "/apartment-create",
+        },
+        {
+          icon: MdRoofing,
           title: "Apartment Details",
           url: "/apartment-details",
         },

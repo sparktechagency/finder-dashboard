@@ -17,9 +17,11 @@ import Apartment from "@/pages/dashboard/apartment/Apartment";
 import Faq from "@/pages/faq/FAQ";
 import Subscriptions from "@/pages/subscriptions/Subscriber";
 import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
-import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
+
 import PrivateRoute from "./PrivateRoute";
 import Subscriber from "@/pages/dashboard/dashboard/Subscriber";
+import ApartmentCreate from "@/pages/dashboard/apartment/ApartmentCreate";
+import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,7 @@ const router = createBrowserRouter([
       { path: "ApartmentForm", element: <ApartmentForm /> },
 
       { path: "apartment", element: <Apartment /> },
+      { path: "apartment-create", element: <ApartmentCreate /> },
       { path: "apartment-details", element: <ApartmentDetails /> },
       { path: "subscriptions", element: <Subscriptions /> },
       { path: "faq", element: <Faq /> },
