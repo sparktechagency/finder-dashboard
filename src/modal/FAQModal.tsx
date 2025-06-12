@@ -1,11 +1,107 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateFaqMutation } from "@/redux/apiSlice/faq/faq";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { LuPlus } from "react-icons/lu";
 
-export default function FAQModal() {
+// Define the FaqItem type or import it from the correct location
+interface FaqItem {
+  _id?: string;
+  question: string;
+  ans: string;
+}
+
+interface FAQModalProps {
+  refetch: () => void;
+  editFaq: FaqItem | null;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export default function FAQModal({
+  refetch,
+  editFaq,
+  open,
+  setOpen,
+}: FAQModalProps) {
+  console.log(editFaq);
+  const [createFaq] = useCreateFaqMutation();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const question = data.get("question");
+    const answer = data.get("answer");
+
+    if (question && answer) {
+      try {
+        await createFaq({ question, ans: answer });
+        toast.success("Create Faq successfully");
+        form.reset();
+        refetch();
+        setOpen(false);
+      } catch {
+        toast.error("failed faq");
+      }
+    }
+  };
+
   return (
-    <div>
-      <Input placeholder="Enter Question" />
-      <Textarea placeholder="Enter Answer" />
-    </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <button className="bg-[#1D7889] text-white p-2 flex items-center gap-2 rounded-sm cursor-pointer mb-4">
+          <LuPlus />
+          Add FAQ
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="sm:max-w-[625px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle> {editFaq?._id ? "Edit Faq" : " Add FAQ"}</DialogTitle>
+          </DialogHeader>
+
+          <div className="grid gap-3 mt-5">
+            <Label htmlFor="question">Question</Label>
+            <Input
+              defaultValue={editFaq?.question || ""}
+              id="question"
+              name="question"
+              placeholder="Enter question"
+              required
+            />
+
+            <Label htmlFor="answer">Answer</Label>
+            <Textarea
+              defaultValue={editFaq?.ans || ""}
+              id="answer"
+              name="answer"
+              placeholder="Enter answer"
+              required
+            />
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="submit"
+              className="bg-[#1D7889] text-white h-10 hover:bg-[#1D7889] cursor-pointer mt-5"
+            >
+              Submit
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

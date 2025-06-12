@@ -8,7 +8,22 @@ const faq = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    createFaq: builder.mutation({
+      query: (data) => ({
+        url: "/faq",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    deleteFaq: builder.mutation({
+      query: (id) => ({
+        url: `/faq/${id}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
-export const { useGetFaqQuery } = faq;
+export const { useGetFaqQuery, useCreateFaqMutation, useDeleteFaqMutation } =
+  faq;
