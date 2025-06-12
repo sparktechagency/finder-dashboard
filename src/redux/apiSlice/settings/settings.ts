@@ -8,14 +8,14 @@ const settings = api.injectEndpoints({
         method: "GET",
       }),
     }),
-
-    createAbout: builder.mutation({
+    updateAbout: builder.mutation({
       query: (data) => ({
         url: "/about",
         method: "POST",
         body: data,
       }),
     }),
+
     getPrivacy: builder.query({
       query: () => ({
         url: "/privacy-policy",
@@ -49,7 +49,7 @@ const settings = api.injectEndpoints({
 
 export const {
   useGetAboutQuery,
-  useCreateAboutMutation,
+  useUpdateAboutMutation,
   useGetPrivacyQuery,
   useCreatePolicyMutation,
 } = settings;

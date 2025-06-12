@@ -16,7 +16,7 @@ const Card = () => {
     },
     {
       icon: <img src={user} alt="total" />,
-      title: "Total Apartment",
+      title: "Total Projects",
       date: "13 NOV, 2024",
       count: staticsData?.apartment || 0,
     },

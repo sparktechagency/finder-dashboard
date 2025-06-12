@@ -30,7 +30,6 @@ export default function ApartmentDetails() {
   const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
 
   const details = data?.data?.apartments[0]?.floorPlans;
-  console.log(details);
 
   if (isLoading || isFetching) {
     return <Loading />;
@@ -45,13 +44,13 @@ export default function ApartmentDetails() {
         {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
         <TableHeader>
           <TableRow className="bg-[#F6F6F6] h-12">
-            <TableHead className="w-[100px] rounded-tl-lg">Serial ID</TableHead>
-            <TableHead>Apartment Name</TableHead>
+            <TableHead className=" rounded-tl-lg">Serial ID</TableHead>
+            <TableHead className="">Projects Name</TableHead>
 
-            <TableHead className="">Bad Size</TableHead>
-            <TableHead className="">Toggle Type</TableHead>
+            {/* <TableHead className="">Bad Size</TableHead> */}
+            <TableHead className="">Sea View</TableHead>
             <TableHead className="">Price</TableHead>
-            <TableHead className="rounded-tr-lg">Action</TableHead>
+            <TableHead className="">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -60,30 +59,18 @@ export default function ApartmentDetails() {
               <TableCell className="font-medium p-3">
                 #{invoice?._id.slice(0, 4)}
               </TableCell>
-              <TableCell className="flex items-center gap-2">
-                {/* <img
-                  className="w-5 h-5"
-                  src={
-                    invoice.apartmentImage
-                      ? invoice?.apartmentImage[0]?.startsWith("http")
-                        ? invoice?.apartmentImage[0]
-                        : `${imageUrl}${invoice?.apartmentImage[0]}`
-                      : ""
-                  }
-                  alt="pic"
-                /> */}
-
+              <TableCell className="flex items-center gap-2 pl-12">
                 {invoice.floorPlan}
               </TableCell>
 
-              <TableCell className="pl-8">{invoice.badSize}</TableCell>
+              {/* <TableCell className="pl-8">{invoice.badSize}</TableCell> */}
               <TableCell className="pl-8">
                 {invoice.seeView === false ? "No" : "YES"}
               </TableCell>
               <TableCell className="">€{invoice.price}</TableCell>
-              <TableCell className=" cursor-pointer ">
+              <TableCell className="cursor-pointer ">
                 <button
-                  className="mr-3 cursor-pointer"
+                  className="pl-3 cursor-pointer "
                   onClick={() => setUserDetails(invoice)}
                 >
                   <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />

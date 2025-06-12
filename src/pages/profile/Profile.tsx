@@ -29,7 +29,7 @@ export default function Profile() {
   useEffect(() => {
     if (data?.data) {
       form.reset({
-        name: data.data.role,
+        name: data.data.name,
         email: data.data.email,
       });
     }
@@ -57,7 +57,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <h3 className="font-semibold text-2xl">{data?.data?.role}</h3>
+              <h3 className="font-semibold text-2xl">{data?.data?.name}</h3>
             </div>
           </div>
           <div>

@@ -77,7 +77,7 @@ export default function SellerChart() {
             <TableHead>Plan Type </TableHead>
             <TableHead className="">Duration</TableHead>
             <TableHead className="">Price</TableHead>
-            <TableHead className="">Commission</TableHead>
+            {/* <TableHead className="">Commission</TableHead> */}
             <TableHead className="rounded-tr-lg">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -91,7 +91,7 @@ export default function SellerChart() {
               <TableCell>{item?.package?.paymentType}</TableCell>
               <TableCell className="">{item?.package?.duration}</TableCell>
               <TableCell className="">€{item.price}</TableCell>
-              <TableCell className="">{item.remaining}%</TableCell>
+              {/* <TableCell className="">{item.remaining}%</TableCell> */}
               <TableCell
                 className=" cursor-pointer "
                 onClick={() => setUserDetails(item)}

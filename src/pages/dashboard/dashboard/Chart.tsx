@@ -60,7 +60,7 @@ export default function Chart() {
           </div>
           <div className="text-[#F79535] flex justify-center items-center gap-2">
             <p className="h-3 w-3 bg-[#F79535] rounded-full"></p>
-            <h1>Apartment list</h1>
+            <h1>Projects list</h1>
           </div>
           <div>
             <Select defaultValue="2025">

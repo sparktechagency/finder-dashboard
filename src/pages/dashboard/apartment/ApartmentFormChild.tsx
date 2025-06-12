@@ -110,7 +110,7 @@ export function ApartmentFormChild({
       email: values.email,
       companyName: values.companyName,
     };
-    console.log(contactData);
+
     formData.append("contact", JSON.stringify(contactData));
 
     // Append features
@@ -142,7 +142,7 @@ export function ApartmentFormChild({
       {/* Apartment Images */}
       <div>
         <Label className="block mb-2 text-black font-medium ">
-          Apartment Images
+          Projects Images
         </Label>
         <div className="flex items-center space-x-4">
           {(imageSections.length > 0 ? imageSections : [null]).map(
@@ -193,8 +193,8 @@ export function ApartmentFormChild({
           <FormField
             type="text"
             id="apartmentName"
-            label="Apartment Name"
-            placeholder="Enter Apartment Name"
+            label="Project Name"
+            placeholder="Enter Project Name"
           />
           <FormField
             type="number"
@@ -246,8 +246,8 @@ export function ApartmentFormChild({
               <FormField
                 type="text"
                 id="companyName"
-                label="Company Name"
-                placeholder="Enter company name"
+                label="Developer Name"
+                placeholder="Enter Developer name"
               />
             </div>
           )}
@@ -296,8 +296,8 @@ export function ApartmentFormChild({
           {/* sales company */}
           <SelectItems
             options={company}
-            title="Sales Company"
-            placeholder="Select company"
+            title="Sales Company Name"
+            placeholder="Select company Name"
             value={selectValues.salesCompany}
             onSelect={(value) => handleSelectChange("salesCompany", value)}
           />

@@ -43,7 +43,7 @@ const data = {
       icon: IoIosPeople,
     },
     {
-      title: "Apartments",
+      title: "Projects",
       url: "#",
       icon: PiBuildingApartmentThin,
       items: [

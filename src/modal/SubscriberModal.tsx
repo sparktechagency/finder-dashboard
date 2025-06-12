@@ -21,7 +21,7 @@ interface dataDetailProps {
 }
 
 const SubscriberModal = ({ isOpen, onClose, data }: dataDetailProps) => {
-  console.log(data);
+  data;
   if (!data) {
     return null;
   }
@@ -49,10 +49,10 @@ const SubscriberModal = ({ isOpen, onClose, data }: dataDetailProps) => {
           <span className="font-semibold capitalize">duration : </span>
           <span>{duration}</span>
         </div>
-        <div className="grid grid-cols-2 py-2">
+        {/* <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize">Commission :</span>
           <span>{remaining}%</span>
-        </div>
+        </div> */}
         <div className="grid grid-cols-2 py-2">
           <span className="font-semibold capitalize"> Price : </span>
           <span>{price}</span>

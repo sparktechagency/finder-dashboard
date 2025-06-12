@@ -10,13 +10,13 @@ export default function ApartmentPage() {
   const [imageSections, setImageSections] = useState<(File | null)[]>([]);
   const [qualitySpecs, setQualitySpecs] = useState<{ [key: string]: string }>({
     category: "",
-    generalAmenites: "",
-    connectivity: "",
-    ecoFriendly: "",
-    parking: "",
-    receational: "",
-    accessiblity: "",
-    nearbyFacilities: "",
+    // generalAmenites: "",
+    // connectivity: "",
+    // ecoFriendly: "",
+    // parking: "",
+    // receational: "",
+    // accessiblity: "",
+    // nearbyFacilities: "",
   });
 
   // const handleFileChange =

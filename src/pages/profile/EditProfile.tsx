@@ -43,7 +43,7 @@ export default function EditProfile() {
 
     const profileData = data.data;
     form.reset({
-      name: profileData.role,
+      name: profileData.name,
       email: profileData.email,
     });
 
@@ -55,6 +55,8 @@ export default function EditProfile() {
       setPreviewUrl(profileUrl);
     }
   }, [data, form]);
+
+  console.log(data?.data);
 
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target?.files?.[0];
@@ -93,7 +95,7 @@ export default function EditProfile() {
       <div className="w-[1035px] mx-auto">
         <div className="flex items-center justify-between gap-4  mt-12">
           <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full border border-gray-500  h-22 w-22 p-2">
+            <div className="relative w-16 h-16 rounded-full border border-gray-500   p-2">
               {previewUrl ? (
                 <img
                   src={previewUrl}

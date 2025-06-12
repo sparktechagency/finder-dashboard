@@ -15,7 +15,7 @@ import ChangePassword from "@/pages/profile/ChangePassword";
 import Dashboard from "@/pages/dashboard/dashboard/Dashboard";
 import Apartment from "@/pages/dashboard/apartment/Apartment";
 import Faq from "@/pages/faq/FAQ";
-import Subscriptions from "@/pages/subscriptions/Subscriber";
+import Subscriptions from "@/pages/subscriptions/Subscriptions";
 import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
 
 import PrivateRoute from "./PrivateRoute";

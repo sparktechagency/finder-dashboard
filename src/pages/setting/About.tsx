@@ -2,24 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import Button from "@/components/layout/shared/Button";
 import {
-  useCreateAboutMutation,
   useGetAboutQuery,
+  useUpdateAboutMutation,
 } from "@/redux/apiSlice/settings/settings";
 
 export default function AboutUS() {
   const { data, isError, isLoading, refetch } = useGetAboutQuery(undefined);
-  data?.data[0]?.text;
-  const [createAbout] = useCreateAboutMutation();
-  // (createAbout);
+  const [updateAbout] = useUpdateAboutMutation();
 
   const editor = useRef(null);
 
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    data?.data?.text;
-    if (data?.data[0]?.text) {
-      setContent(data?.data[0]?.text || "");
+    if (data?.data?.text) {
+      setContent(data?.data?.text || "");
     }
   }, [data]);
 
@@ -32,8 +29,7 @@ export default function AboutUS() {
 
   const handleOnSave = async () => {
     const data = { text: content };
-    data;
-    await createAbout(data);
+    await updateAbout(data);
     refetch();
   };
   return (

@@ -11,14 +11,14 @@ import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useDeleteApartmentMutation,
   useGetApartmentsQuery,
 } from "@/redux/apiSlice/apartments/apartments";
 import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
-import { imageUrl } from "@/redux/api/baseApi";
+// import { imageUrl } from "@/redux/api/baseApi";
 
 interface ApartmentData {
   _id: string;
@@ -88,8 +88,10 @@ export default function Apartment() {
             <TableHead>Apartment Name</TableHead>
             <TableHead>Location</TableHead>
             <TableHead className="">Apartment Code</TableHead>
-            <TableHead className="">Commission</TableHead>
+            {/* <TableHead className="">Commission</TableHead> */}
             <TableHead className="">Price</TableHead>
+            <TableHead className="">Add Floor</TableHead>
+            <TableHead className="">Add Phase</TableHead>
             <TableHead className="rounded-tr-lg">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -100,7 +102,7 @@ export default function Apartment() {
                 {invoice?._id.slice(0, 4)}
               </TableCell>
               <TableCell className="flex items-center gap-2">
-                <img
+                {/* <img
                   className="w-5 h-5"
                   src={
                     invoice.apartmentImage
@@ -110,15 +112,27 @@ export default function Apartment() {
                       : ""
                   }
                   alt="pic"
-                />
+                /> */}
 
                 {invoice.apartmentName}
               </TableCell>
               <TableCell>{invoice.location}</TableCell>
               <TableCell className="pl-8">{invoice.code || "3434"}</TableCell>
-              <TableCell className="pl-8">{invoice.commission}%</TableCell>
+              {/* <TableCell className="pl-8">{invoice.commission}%</TableCell> */}
               <TableCell className="">€{invoice.price}</TableCell>
-              <TableCell className=" cursor-pointer ">
+              <TableCell className="">
+                <Link to={`/apartment-create?=${invoice?._id}`}>
+                  <button className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer">
+                    Add floor
+                  </button>
+                </Link>
+              </TableCell>
+              <TableCell>
+                <button className="border border-gray-300 px-4 py-2 rounded-2xl ">
+                  Add phase
+                </button>
+              </TableCell>
+              <TableCell className="cursor-pointer ">
                 <button
                   className="mr-3 cursor-pointer"
                   onClick={() => setUserDetails(invoice)}

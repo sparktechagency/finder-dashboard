@@ -40,8 +40,6 @@ export default function DublicateSubscribeEditModal({
   const [createSubscription] = useCreateSubscriptionMutation();
   const [updateSubscription] = useUpdateSubscriptionMutation();
 
-  console.log(edit?.title);
-
   const [formState, setFormState] = useState<{
     title: string;
     price?: number;
@@ -83,6 +81,7 @@ export default function DublicateSubscribeEditModal({
   }, [edit]);
 
   const removeOffer = (index: number) => {
+    console.log(index);
     setFormState((prev) => ({
       ...prev,
       description: prev.description.filter((_, i) => i !== index),
@@ -103,12 +102,12 @@ export default function DublicateSubscribeEditModal({
       );
       return;
     }
-    const { title, price, offers, duration, paymentType } = formState;
+    const { title, price, duration, paymentType, description } = formState;
 
     const data = {
       title,
-      description: offers,
-      price: price,
+      description,
+      price,
       duration,
       paymentType,
     };
@@ -171,12 +170,12 @@ export default function DublicateSubscribeEditModal({
                 <SelectTrigger id="title" className="w-full mt-1">
                   <SelectValue
                     placeholder="Select Package Name"
-                    defaultValue={formState.title}
+                    defaultValue={formState?.title}
                   />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Premium Plan">Premium Plan</SelectItem>
-                  <SelectItem value="Standard Plan">Standard Plan</SelectItem>
+                  <SelectItem value="Starter Plan">Standard Plan</SelectItem>
                 </SelectContent>
               </Select>
             </div>

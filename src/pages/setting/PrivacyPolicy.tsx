@@ -14,9 +14,8 @@ export default function PrivacyPolicy() {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    data?.data?.text;
-    if (data?.data[0]?.text) {
-      setContent(data?.data[0]?.text || "");
+    if (data?.data?.text) {
+      setContent(data?.data?.text || "");
     }
   }, [data]);
 
@@ -29,7 +28,6 @@ export default function PrivacyPolicy() {
 
   const handleOnSave = async () => {
     const data = { text: content };
-    data;
     await createPolicy(data);
     refetch();
   };
