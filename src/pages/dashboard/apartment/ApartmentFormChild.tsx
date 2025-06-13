@@ -126,7 +126,10 @@ export function ApartmentFormChild({
     formData.append("propertyType", selectValues.propertyType);
     formData.append("location", selectValues.location);
     formData.append("salesCompany", selectValues.salesCompany);
-    formData.append("CompletionDate", selectValues.completionYear);
+    formData.append(
+      "CompletionDate",
+      new Date(selectValues.completionYear).toISOString()
+    );
 
     try {
       await createApartment(formData);
@@ -264,13 +267,6 @@ export function ApartmentFormChild({
             placeholder="Enter Price"
           />
 
-          <QualitySpecsInput
-            specs={qualitySpecs}
-            onChange={handleQualityChange}
-            onAdd={() => handleInputAdd("")}
-            onRemove={handleRemove}
-          />
-
           {/* map */}
           <LocationPicker
             markerPosition={markerPosition}
@@ -308,6 +304,13 @@ export function ApartmentFormChild({
             placeholder="Select year"
             value={selectValues.completionYear}
             onSelect={(value) => handleSelectChange("completionYear", value)}
+          />
+
+          <QualitySpecsInput
+            specs={qualitySpecs}
+            onChange={handleQualityChange}
+            onAdd={() => handleInputAdd("")}
+            onRemove={handleRemove}
           />
         </div>
       </div>

@@ -10,8 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateFaqMutation } from "@/redux/apiSlice/faq/faq";
-import { useState } from "react";
+import {
+  useCreateFaqMutation,
+  useUpdateFaqMutation,
+} from "@/redux/apiSlice/faq/faq";
 import toast from "react-hot-toast";
 import { LuPlus } from "react-icons/lu";
 
@@ -25,6 +27,7 @@ interface FaqItem {
 interface FAQModalProps {
   refetch: () => void;
   editFaq: FaqItem | null;
+  setEditFaq: (faq: FaqItem | null) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
@@ -32,11 +35,13 @@ interface FAQModalProps {
 export default function FAQModal({
   refetch,
   editFaq,
+  setEditFaq,
   open,
   setOpen,
 }: FAQModalProps) {
-  console.log(editFaq);
   const [createFaq] = useCreateFaqMutation();
+  const [updateFaq] = useUpdateFaqMutation(); // Assuming updateFaq uses the same mutation as createFaq
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -46,11 +51,16 @@ export default function FAQModal({
 
     if (question && answer) {
       try {
-        await createFaq({ question, ans: answer });
-        toast.success("Create Faq successfully");
+        if (editFaq?._id) {
+          await updateFaq({ id: editFaq._id, data: { question, ans: answer } });
+          toast.success("FAQ updated successfully");
+        } else {
+          await createFaq({ question, ans: answer });
+          toast.success("FAQ created successfully");
+        }
         form.reset();
         refetch();
-        setOpen(false);
+        setOpen(false); // Close modal
       } catch {
         toast.error("failed faq");
       }
@@ -60,7 +70,13 @@ export default function FAQModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="bg-[#1D7889] text-white p-2 flex items-center gap-2 rounded-sm cursor-pointer mb-4">
+        <button
+          className="bg-[#1D7889] text-white p-2 flex items-center gap-2 rounded-sm cursor-pointer mb-4"
+          onClick={() => {
+            setEditFaq(null); // Ensure it's cleared
+            setOpen(true); // Open in add mode
+          }}
+        >
           <LuPlus />
           Add FAQ
         </button>

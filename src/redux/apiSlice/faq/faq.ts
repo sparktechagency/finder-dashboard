@@ -15,6 +15,13 @@ const faq = api.injectEndpoints({
         body: data,
       }),
     }),
+    updateFaq: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/faq/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+    }),
 
     deleteFaq: builder.mutation({
       query: (id) => ({
@@ -25,5 +32,9 @@ const faq = api.injectEndpoints({
   }),
 });
 
-export const { useGetFaqQuery, useCreateFaqMutation, useDeleteFaqMutation } =
-  faq;
+export const {
+  useGetFaqQuery,
+  useCreateFaqMutation,
+  useUpdateFaqMutation,
+  useDeleteFaqMutation,
+} = faq;

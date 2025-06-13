@@ -11,14 +11,15 @@ import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   useDeleteApartmentMutation,
   useGetApartmentsQuery,
 } from "@/redux/apiSlice/apartments/apartments";
 import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
-// import { imageUrl } from "@/redux/api/baseApi";
+import AddPhaseModal from "@/modal/AddPhaseModal";
+import ApartmentCreateModal from "@/modal/ApartmentCreateModal";
 
 interface ApartmentData {
   _id: string;
@@ -26,8 +27,10 @@ interface ApartmentData {
   apartmentName: string;
   commission: string;
   price: number;
-  code: string;
+  paymentPlanPDF: string;
+  qualitySpecificationPDF: string;
   location: string;
+  CompletionDate: string;
   contact: {
     location: string;
   };
@@ -39,11 +42,17 @@ export default function Apartment() {
   const [deleteApartment] = useDeleteApartmentMutation();
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedApartmentId, setSelectedApartmentId] = useState<string | null>(
+    null
+  );
+
+  console.log(data?.data);
 
   const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You want to be delete this apartment",
+      text: "You want to delete this apartment",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -53,22 +62,14 @@ export default function Apartment() {
       if (result.isConfirmed) {
         await deleteApartment(id);
         refetch();
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
+        Swal.fire("Deleted!", "The apartment has been deleted.", "success");
       }
     });
   };
 
-  if (isLoading || isFetching) {
-    return <Loading />;
-  }
+  if (isLoading || isFetching) return <Loading />;
+  if (isError) return <ErrorPage />;
 
-  if (isError) {
-    return <ErrorPage />;
-  }
   return (
     <>
       <div className="flex justify-end mb-3">
@@ -76,71 +77,69 @@ export default function Apartment() {
           className="bg-[#fcebd9] rounded-[10px] px-5 py-2 flex items-center text-sm font-medium text-[#1f1f1f] cursor-pointer"
           onClick={() => navigate("/apartmentForm")}
         >
-          <span className="text-lg font-bold mr-2">+</span> Add Apartment
+          <span className="text-lg font-bold mr-2">+</span> Add Project
         </button>
       </div>
 
       <Table>
-        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
         <TableHeader>
           <TableRow className="bg-[#F6F6F6] h-12">
-            <TableHead className="w-[100px] rounded-tl-lg">Serial ID</TableHead>
-            <TableHead>Apartment Name</TableHead>
+            <TableHead>Serial ID</TableHead>
+            <TableHead>Projects Name</TableHead>
+            <TableHead>Payment Plan</TableHead>
+            <TableHead>Quality Specification</TableHead>
             <TableHead>Location</TableHead>
-            <TableHead className="">Apartment Code</TableHead>
-            {/* <TableHead className="">Commission</TableHead> */}
-            <TableHead className="">Price</TableHead>
-            <TableHead className="">Add Floor</TableHead>
-            <TableHead className="">Add Phase</TableHead>
-            <TableHead className="rounded-tr-lg">Action</TableHead>
+            <TableHead>Commission</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Completion Year</TableHead>
+            <TableHead>Add Floor</TableHead>
+            <TableHead>Add Phase</TableHead>
+            <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data?.data?.map((invoice: ApartmentData) => (
-            <TableRow key={invoice._id} className="">
-              <TableCell className="font-medium p-3">
+            <TableRow key={invoice._id}>
+              <TableCell className="font-medium">
                 {invoice?._id.slice(0, 4)}
               </TableCell>
-              <TableCell className="flex items-center gap-2">
-                {/* <img
-                  className="w-5 h-5"
-                  src={
-                    invoice.apartmentImage
-                      ? invoice?.apartmentImage[0]?.startsWith("http")
-                        ? invoice?.apartmentImage[0]
-                        : `${imageUrl}${invoice?.apartmentImage[0]}`
-                      : ""
-                  }
-                  alt="pic"
-                /> */}
-
-                {invoice.apartmentName}
+              <TableCell>{invoice.apartmentName}</TableCell>
+              <TableCell>{invoice.paymentPlanPDF.split("/").pop()}</TableCell>
+              <TableCell>
+                {invoice.qualitySpecificationPDF?.[0]?.split("/").pop()}
               </TableCell>
               <TableCell>{invoice.location}</TableCell>
-              <TableCell className="pl-8">{invoice.code || "3434"}</TableCell>
-              {/* <TableCell className="pl-8">{invoice.commission}%</TableCell> */}
-              <TableCell className="">€{invoice.price}</TableCell>
-              <TableCell className="">
-                <Link to={`/apartment-create?=${invoice?._id}`}>
-                  <button className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer">
-                    Add floor
-                  </button>
-                </Link>
+              <TableCell className="">{invoice.commission}</TableCell>
+              <TableCell>€{invoice.price}</TableCell>
+              <TableCell className="">{invoice.CompletionDate}</TableCell>
+              <TableCell>
+                <button
+                  className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer"
+                  onClick={() => {
+                    setSelectedApartmentId(invoice._id);
+                    setOpenModal(true);
+                  }}
+                >
+                  Add floor
+                </button>
               </TableCell>
               <TableCell>
-                <button className="border border-gray-300 px-4 py-2 rounded-2xl ">
-                  Add phase
-                </button>
+                <AddPhaseModal />
               </TableCell>
-              <TableCell className="cursor-pointer ">
+              <TableCell>
                 <button
-                  className="mr-3 cursor-pointer"
-                  onClick={() => setUserDetails(invoice)}
+                  className="mr-3"
+                  onClick={() =>
+                    navigate(`/projects-details?id=${invoice?._id}`)
+                  }
                 >
-                  <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />
+                  <MdOutlineRemoveRedEye
+                    size={22}
+                    className="text-[#6CA0DC] cursor-pointer"
+                  />
                 </button>
-                <button onClick={() => handleDelete(invoice?._id)}>
-                  <RiDeleteBin6Line className=" text-[22px] cursor-pointer text-red-400" />
+                <button onClick={() => handleDelete(invoice._id)}>
+                  <RiDeleteBin6Line className="text-[22px] text-red-400 cursor-pointer" />
                 </button>
               </TableCell>
             </TableRow>
@@ -148,12 +147,19 @@ export default function Apartment() {
         </TableBody>
       </Table>
 
-      {/* user details show */}
       {userDetails && (
         <UserModal
           isOpen={!!userDetails}
           data={userDetails}
           onClose={() => setUserDetails(null)}
+        />
+      )}
+
+      {openModal && selectedApartmentId && (
+        <ApartmentCreateModal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          apartmentId={selectedApartmentId}
         />
       )}
     </>

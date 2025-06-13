@@ -7,10 +7,9 @@ import { NavMain } from "@/components/nav-main";
 import { BiCategory } from "react-icons/bi";
 import { IoIosPeople } from "react-icons/io";
 import { MdOutlineSubscriptions } from "react-icons/md";
-import { PiBuildingApartmentThin } from "react-icons/pi";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import { BiColorFill } from "react-icons/bi";
-import { MdRoofing } from "react-icons/md";
+
 // import { NavProjects } from "@/components/nav-projects";
 
 import { LuFileSliders } from "react-icons/lu";
@@ -42,28 +41,13 @@ const data = {
       url: "/subscriber",
       icon: IoIosPeople,
     },
+
     {
+      icon: BiColorFill,
       title: "Projects",
-      url: "#",
-      icon: PiBuildingApartmentThin,
-      items: [
-        {
-          icon: BiColorFill,
-          title: "Apartment",
-          url: "/apartment",
-        },
-        {
-          icon: MdRoofing,
-          title: "Apartment Create",
-          url: "/apartment-create",
-        },
-        {
-          icon: MdRoofing,
-          title: "Apartment Details",
-          url: "/apartment-details",
-        },
-      ],
+      url: "/projects",
     },
+
     {
       title: "Subscriptions",
       url: "/subscriptions",

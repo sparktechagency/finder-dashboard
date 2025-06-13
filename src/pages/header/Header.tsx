@@ -10,8 +10,8 @@ const path = [
   { path: "/subscriptions", name: "Subscriptions" },
   { path: "/faq", name: "FAQ" },
   { path: "/apartmentForm", name: "Apartment Form" },
-  { path: "/apartment-details", name: "Project Details" },
-  { path: "/apartment-create", name: "Apartment Create" },
+  { path: "/projects-details", name: "Project Details" },
+  { path: "/projects-create", name: "Project Create" },
   { path: "/terms-condition", name: "Terms & Condition" },
   { path: "/about", name: "About Us" },
   { path: "/privacy-policy", name: "Privacy Policy" },
@@ -19,6 +19,7 @@ const path = [
   { path: "/profile", name: "Profile" },
   { path: "/edit-profile", name: "Edit Profile" },
   { path: "/change-password", name: "Change Password" },
+  { path: "/projects", name: "Projects" },
 ];
 
 export default function Header() {

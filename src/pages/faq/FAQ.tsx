@@ -42,6 +42,7 @@ const Faq = () => {
           <FAQModal
             refetch={refetch}
             editFaq={editFaq}
+            setEditFaq={setEditFaq}
             open={open}
             setOpen={setOpen}
           />
@@ -52,8 +53,8 @@ const Faq = () => {
             className="bg-[#F6F6F6] p-4 rounded-md space-y-2 mb-4"
           >
             {/* Question */}
-            <div className="flex justify-between items-center cursor-pointer  text-[#1A1E25]">
-              <h3 className="text-[18px] font-normal leading-[30px]">
+            <div className="flex justify-between items-center cursor-pointer">
+              <h3 className="text-[18px] font-normal leading-[30px] text-[#1F1F1F]">
                 {item?.question}
               </h3>
               <div className="flex items-center gap-2.5">
