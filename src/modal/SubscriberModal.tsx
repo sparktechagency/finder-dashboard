@@ -21,11 +21,10 @@ interface dataDetailProps {
 }
 
 const SubscriberModal = ({ isOpen, onClose, data }: dataDetailProps) => {
-  data;
   if (!data) {
     return null;
   }
-  const { price, remaining, user, package: pkg } = data;
+  const { price, user, package: pkg } = data;
   const { name } = user;
   const { paymentType, duration } = pkg;
 
