@@ -13,15 +13,15 @@ import Profile from "@/pages/profile/Profile";
 import EditProfile from "@/pages/profile/EditProfile";
 import ChangePassword from "@/pages/profile/ChangePassword";
 import Dashboard from "@/pages/dashboard/dashboard/Dashboard";
-import Apartment from "@/pages/dashboard/apartment/Apartment";
+import Apartment from "@/pages/dashboard/apartment/Projects";
 import Faq from "@/pages/faq/FAQ";
 import Subscriptions from "@/pages/subscriptions/Subscriptions";
-import ApartmentForm from "@/pages/dashboard/apartment/ApartmentForm";
+import AddCreateProject from "@/pages/dashboard/apartment/ProjectForm";
 
 import PrivateRoute from "./PrivateRoute";
 import Subscriber from "@/pages/dashboard/dashboard/Subscriber";
-import ApartmentCreate from "@/pages/dashboard/apartment/ApartmentCreate";
-import ApartmentDetails from "@/pages/dashboard/apartment/ApartmentDetails";
+// import ApartmentCreate from "@/pages/dashboard/apartment/ApartmentCreate";
+import ApartmentDetails from "@/pages/dashboard/apartment/ProjectDetails";
 
 const router = createBrowserRouter([
   {
@@ -35,10 +35,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Dashboard /> },
       { path: "Subscriber", element: <Subscriber /> },
-      { path: "ApartmentForm", element: <ApartmentForm /> },
-
+      { path: "projectForm", element: <AddCreateProject /> },
       { path: "projects", element: <Apartment /> },
-      { path: "projects-create", element: <ApartmentCreate /> },
       { path: "projects-details", element: <ApartmentDetails /> },
       { path: "subscriptions", element: <Subscriptions /> },
       { path: "faq", element: <Faq /> },

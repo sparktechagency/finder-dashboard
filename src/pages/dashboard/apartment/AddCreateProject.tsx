@@ -9,7 +9,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import SelectItems from "./SelectItem";
 import { company, completionYear, location } from "./Allname";
 import LocationPicker from "../map/Map";
-import { useCreateApartmentMutation } from "@/redux/apiSlice/apartments/apartments";
+import { useCreateProjectMutation } from "@/redux/apiSlice/apartments/apartments";
 import toast from "react-hot-toast";
 
 interface ApartmentFormProps {
@@ -38,7 +38,7 @@ interface ApartmentFormProps {
   handleRemove: (key: string) => void;
 }
 
-export function ApartmentFormChild({
+export default function AddCreateProject({
   // images,
   files,
   imageSections,
@@ -50,7 +50,7 @@ export function ApartmentFormChild({
   handleInputAdd,
   handleRemove,
 }: ApartmentFormProps) {
-  const [createApartment] = useCreateApartmentMutation();
+  const [createProject] = useCreateProjectMutation();
   const [right, setRight] = useState(false);
   const [selectValues, setSelectValues] = useState({
     propertyType: "",
@@ -132,9 +132,9 @@ export function ApartmentFormChild({
     );
 
     try {
-      await createApartment(formData);
+      await createProject(formData);
       toast.success("create successfully");
-      // form.reset();
+      form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);
     }

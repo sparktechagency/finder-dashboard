@@ -6,12 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetApartmentsDetailsQuery } from "@/redux/apiSlice/apartments/apartments";
+
 import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
 import { imageUrl } from "@/redux/api/baseApi";
 import { useState } from "react";
 import Pagination from "@/components/layout/shared/Pagination";
+import { useGetProjectsFloorQuery } from "@/redux/apiSlice/apartments/apartments";
 
 interface ApartmentData {
   _id: string;
@@ -25,7 +26,7 @@ interface ApartmentData {
 
 export default function GetFloor() {
   const { data, isFetching, isError, isLoading } =
-    useGetApartmentsDetailsQuery(undefined);
+    useGetProjectsFloorQuery(undefined);
   const searchParams = new URLSearchParams(window.location.search);
   const apartmentId = searchParams.get("id");
 

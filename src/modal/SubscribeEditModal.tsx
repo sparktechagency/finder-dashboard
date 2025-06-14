@@ -33,14 +33,12 @@ export default function SubscribeEditModal({
   const [createSubscription] = useCreateSubscriptionMutation();
   const [packageName, setPackageName] = useState<string>("");
   const [price, setPrice] = useState<number | undefined>();
-  const [descriptions, setDescriptions] = useState<string>("");
+  const [, setDescriptions] = useState<string>("");
   const [offers, setOffers] = useState(["120 day permission to use"]);
   const [isOfferModalOpen, setOfferModalOpen] = useState(false);
   const [newOffer, setNewOffer] = useState("");
   const [duration, setDuration] = useState<number | string>("");
   const [paymentType, setPaymentType] = useState<string>("");
-
-  descriptions;
 
   useEffect(() => {
     if (edit?._id) {
@@ -64,13 +62,6 @@ export default function SubscribeEditModal({
 
   const onSubmit = async () => {
     // Here you can handle the submission data
-    ({
-      packageName,
-      price,
-      offers,
-      duration,
-      paymentType,
-    });
 
     const subscriptionData = {
       title: packageName || "Default Package",

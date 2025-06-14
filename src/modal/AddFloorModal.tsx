@@ -11,8 +11,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import {
-  useCreateApartmentFloorMutation,
-  useGetApartmentsDetailsQuery,
+  useCreateProjectFloorMutation,
+  useGetProjectsFloorQuery,
 } from "@/redux/apiSlice/apartments/apartments";
 
 interface Props {
@@ -21,14 +21,10 @@ interface Props {
   apartmentId: string;
 }
 
-export default function ApartmentCreateModal({
-  isOpen,
-  onClose,
-  apartmentId,
-}: Props) {
-  console.log("apartmentId:", apartmentId);
-  const [createApartmentFloor] = useCreateApartmentFloorMutation();
-  const { refetch } = useGetApartmentsDetailsQuery(undefined);
+export default function AddFloorModal({ isOpen, onClose, apartmentId }: Props) {
+  const [createProjectFloor] = useCreateProjectFloorMutation();
+  const { refetch } = useGetProjectsFloorQuery(undefined);
+
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const handleFileChange = ({
@@ -62,7 +58,7 @@ export default function ApartmentCreateModal({
     console.log("Form Data:", formData.values());
 
     try {
-      const res = await createApartmentFloor(formData).unwrap();
+      const res = await createProjectFloor(formData).unwrap();
       if (res?.success) {
         toast.success(res.message || "Created Successfully");
         setPdfFile(null);

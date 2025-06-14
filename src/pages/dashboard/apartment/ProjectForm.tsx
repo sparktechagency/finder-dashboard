@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { ApartmentFormChild } from "./ApartmentFormChild";
+import AddCreateProject from "./AddCreateProject";
 
-export default function ApartmentPage() {
+export default function ProjectForm() {
   // const [images, setImages] = useState<{
   //   payment?: string;
   //   quality?: string;
@@ -86,7 +86,7 @@ export default function ApartmentPage() {
   };
 
   return (
-    <ApartmentFormChild
+    <AddCreateProject
       // images={images}
       // @ts-expect-error imageSections prop type mismatch with ApartmentFormChild, intentional for now
       imageSections={imageSections}

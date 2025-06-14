@@ -1,38 +1,41 @@
 import { api } from "@/redux/api/baseApi";
 
-const apartments = api.injectEndpoints({
+const projects = api.injectEndpoints({
   endpoints: (builder) => ({
-    getApartments: builder.query({
+    getProjects: builder.query({
       query: () => ({
         url: "/apartment",
         method: "GET",
       }),
+      providesTags: ["package"],
     }),
 
-    createApartment: builder.mutation({
+    createProject: builder.mutation({
       query: (data) => ({
         url: "/apartment/create",
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["package"],
     }),
 
-    deleteApartment: builder.mutation({
+    deleteProject: builder.mutation({
       query: (id) => ({
         url: `/apartment/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["package"],
     }),
 
-    getApartmentsDetails: builder.query({
+    getProjectsFloor: builder.query({
       query: () => ({
         url: "/floor",
         method: "GET",
       }),
-      // providesTags: ["floorPlans"],
+      providesTags: ["package"],
     }),
 
-    createApartmentFloor: builder.mutation({
+    createProjectFloor: builder.mutation({
       query: (data) => {
         return {
           url: "/floor/create",
@@ -40,15 +43,15 @@ const apartments = api.injectEndpoints({
           body: data,
         };
       },
-      // invalidatesTags: ["floorPlans"],
+      invalidatesTags: ["package"],
     }),
   }),
 });
 
 export const {
-  useGetApartmentsQuery,
-  useGetApartmentsDetailsQuery,
-  useCreateApartmentMutation,
-  useCreateApartmentFloorMutation,
-  useDeleteApartmentMutation,
-} = apartments;
+  useGetProjectsQuery,
+  useCreateProjectMutation,
+  useGetProjectsFloorQuery,
+  useCreateProjectFloorMutation,
+  useDeleteProjectMutation,
+} = projects;

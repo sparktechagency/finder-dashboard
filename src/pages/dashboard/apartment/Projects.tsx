@@ -13,13 +13,13 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import {
-  useDeleteApartmentMutation,
-  useGetApartmentsQuery,
+  useDeleteProjectMutation,
+  useGetProjectsQuery,
 } from "@/redux/apiSlice/apartments/apartments";
 import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
 import AddPhaseModal from "@/modal/AddPhaseModal";
-import ApartmentCreateModal from "@/modal/ApartmentCreateModal";
+import ApartmentCreateModal from "@/modal/AddFloorModal";
 import { imageUrl } from "@/redux/api/baseApi";
 
 interface ApartmentData {
@@ -37,10 +37,10 @@ interface ApartmentData {
   };
 }
 
-export default function Apartment() {
-  const { data, isFetching, isError, isLoading, refetch } =
-    useGetApartmentsQuery(undefined);
-  const [deleteApartment] = useDeleteApartmentMutation();
+export default function Projects() {
+  const { data, isFetching, isError, isLoading } =
+    useGetProjectsQuery(undefined);
+  const [deleteProject] = useDeleteProjectMutation();
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState<ApartmentData | null>(null);
   const [openModal, setOpenModal] = useState(false);
@@ -59,9 +59,9 @@ export default function Apartment() {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteApartment(id);
-        refetch();
-        Swal.fire("Deleted!", "The apartment has been deleted.", "success");
+        await deleteProject(id);
+
+        Swal.fire("Deleted!", "The deleteProject has been deleted.", "success");
       }
     });
   };
@@ -74,7 +74,7 @@ export default function Apartment() {
       <div className="flex justify-end mb-3">
         <button
           className="bg-[#fcebd9] rounded-[10px] px-5 py-2 flex items-center text-sm font-medium text-[#1f1f1f] cursor-pointer"
-          onClick={() => navigate("/apartmentForm")}
+          onClick={() => navigate("/projectForm")}
         >
           <span className="text-lg font-bold mr-2">+</span> Add Project
         </button>
@@ -132,7 +132,7 @@ export default function Apartment() {
                 </a>
               </TableCell>
               <TableCell>{invoice.location}</TableCell>
-              <TableCell className="">{invoice.commission}</TableCell>
+              <TableCell className="pl-9">{invoice.commission}%</TableCell>
               <TableCell>€{invoice.price}</TableCell>
               <TableCell className="">
                 {invoice.CompletionDate

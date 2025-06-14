@@ -1,7 +1,7 @@
 import AddFloor from "./ProjectDetails/GetFloor";
 import AddPhase from "./ProjectDetails/AddPhase";
 
-export default function ApartmentDetails() {
+export default function ProjectDetails() {
   return (
     <>
       <div className="border border-gray-300 px-4 py-2 mx-auto w-[750px] rounded-md grid grid-cols-1 md:grid-cols-3 gap-2">

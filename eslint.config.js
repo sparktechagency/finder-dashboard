@@ -26,7 +26,7 @@ export default tseslint.config(
     },
     rules: {
       "@typescript-eslint/no-explicit-any": ["off"],
-      "no-unused-vars": 0,
+      "no-unused-vars": "off",
     },
   }
 );

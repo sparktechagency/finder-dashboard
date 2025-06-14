@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 
-interface FaqItem {
+export interface FaqItem {
   _id: string;
   question: string;
   ans: string;
