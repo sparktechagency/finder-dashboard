@@ -18,16 +18,11 @@ import toast from "react-hot-toast";
 import { LuPlus } from "react-icons/lu";
 
 // Define the FaqItem type or import it from the correct location
-interface FaqItem {
-  _id?: string;
-  question: string;
-  ans: string;
-}
 
 interface FAQModalProps {
   refetch: () => void;
-  editFaq: FaqItem | null;
-  setEditFaq: (faq: FaqItem | null) => void;
+  editFaq: any;
+  setEditFaq: (faq: any) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
