@@ -1,14 +1,36 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
 import Button from "@/components/layout/shared/Button";
+import {
+  useGetAboutQuery,
+  useUpdateAboutMutation,
+} from "@/redux/apiSlice/settings/settings";
 
 export default function AboutUS() {
+  const { data, isError, isLoading, refetch } = useGetAboutQuery(undefined);
+  const [updateAbout] = useUpdateAboutMutation();
+
   const editor = useRef(null);
 
   const [content, setContent] = useState("");
 
-  const handleOnSave = (value: string) => {
-    console.log(value);
+  useEffect(() => {
+    if (data?.data?.text) {
+      setContent(data?.data?.text || "");
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return <span>Loading ....</span>;
+  }
+  if (isError) {
+    return <span>data not found ....</span>;
+  }
+
+  const handleOnSave = async () => {
+    const data = { text: content };
+    await updateAbout(data);
+    refetch();
   };
   return (
     <>
@@ -25,7 +47,7 @@ export default function AboutUS() {
       </div>
 
       <Button
-        onClick={() => handleOnSave(content)}
+        onClick={handleOnSave}
         htmlType="submit"
         className="bg-[#F79535] hover:bg-[#F79535] text-black font-medium text-lg px-6 w-full mt-4 h-10"
       >

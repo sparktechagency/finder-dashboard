@@ -7,8 +7,8 @@ import { NavMain } from "@/components/nav-main";
 import { BiCategory } from "react-icons/bi";
 import { IoIosPeople } from "react-icons/io";
 import { MdOutlineSubscriptions } from "react-icons/md";
-import { PiBuildingApartmentThin } from "react-icons/pi";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { BiColorFill } from "react-icons/bi";
 
 // import { NavProjects } from "@/components/nav-projects";
 
@@ -26,7 +26,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // This is sample data.
 const data = {
   navMain: [
@@ -41,11 +41,13 @@ const data = {
       url: "/subscriber",
       icon: IoIosPeople,
     },
+
     {
-      title: "Apartment",
-      url: "/apartment",
-      icon: PiBuildingApartmentThin,
+      icon: BiColorFill,
+      title: "Projects",
+      url: "/projects",
     },
+
     {
       title: "Subscriptions",
       url: "/subscriptions",
@@ -83,6 +85,14 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("email");
+    localStorage.removeItem("resetToken");
+    navigate("/login");
+  };
   return (
     <Sidebar {...props}>
       <SidebarHeader className="flex items-center justify-center">
@@ -97,14 +107,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarRail />
       <SidebarFooter className="mb-10 cursor-pointer">
-        <Link to="/login" className="flex items-center ml-3 text-red-400">
+        <div
+          onClick={handleLogOut}
+          className="flex items-center ml-3 text-red-400"
+        >
           <button className=" cursor-pointer flex justify-center items-center gap-3">
             <span>
               <TbLogout2 size={22} />
-            </span>{" "}
+            </span>
             <span> Logout</span>
           </button>
-        </Link>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

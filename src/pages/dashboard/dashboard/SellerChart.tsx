@@ -1,3 +1,4 @@
+import Loading from "@/components/layout/shared/Loading";
 import {
   Table,
   TableBody,
@@ -6,74 +7,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import UserModal from "@/modal/UserModal";
+import SubscriberModal from "@/modal/SubscriberModal";
+
+import {
+  useDeleteSubscriberMutation,
+  useGetSubscriberQuery,
+} from "@/redux/apiSlice/subscriber/subscriber";
 import { useState } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
-const invoices = [
-  {
-    key: "1",
-    no: "#24721",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
+type item = {
+  user: {
+    name: string;
+  };
+  package: {
+    paymentType: string;
+    duration: string;
+  };
+  remaining: string;
 
-    startDate: "05/07/2025",
-    endDate: "08/07/2025",
-  },
-  {
-    key: "2",
-    no: "#26552",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-
-    startDate: "05/07/2025",
-    endDate: "08/07/2025",
-  },
-  {
-    key: "3",
-    no: "#24563",
-    name: "Admin Asadujjaman",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-
-    startDate: "05/07/2025",
-    endDate: "08/07/2025",
-  },
-  {
-    key: "4",
-    no: "#2424",
-    name: "Dr. Anna KOWALSKA",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-
-    startDate: "05/07/2025",
-    endDate: "08/07/2025",
-  },
-  {
-    key: "5",
-    no: "#247865",
-    name: "Dr. Michael O'CONNOR",
-    plan: "Monthly",
-    duration: "Month",
-    price: "23",
-
-    startDate: "05/07/2025",
-    endDate: "08/07/2025",
-  },
-];
+  price: string;
+  commission: string;
+};
 
 export default function SellerChart() {
-  const [userDetails, setUserDetails] = useState(false);
+  const {
+    data: subscriber,
+    isLoading,
+    refetch,
+  } = useGetSubscriberQuery(undefined);
+  const [deleteSubscriber] = useDeleteSubscriberMutation();
+  const [userDetails, setUserDetails] = useState<item | false>(false);
 
-  const handleDelete = () => {
+  const handleDelete = (id: string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -84,6 +52,8 @@ export default function SellerChart() {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
+        deleteSubscriber(id);
+        refetch();
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -92,42 +62,44 @@ export default function SellerChart() {
       }
     });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <Table>
-        {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-        <TableHeader>
-          <TableRow className="bg-[#F6F6F6] h-12">
-            <TableHead className="w-[100px] rounded-tl-lg">Serial ID</TableHead>
+        <TableHeader className="">
+          <TableRow className="bg-[#F6F6F6] h-12 font-bold">
+            <TableHead className="">Serial ID</TableHead>
             <TableHead>User Name</TableHead>
             <TableHead>Plan Type </TableHead>
             <TableHead className="">Duration</TableHead>
             <TableHead className="">Price</TableHead>
-
-            <TableHead className="">Start Date</TableHead>
-            <TableHead className="">Expire Date</TableHead>
+            {/* <TableHead className="">Commission</TableHead> */}
             <TableHead className="rounded-tr-lg">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.key} className="">
-              <TableCell className="font-medium p-3">{invoice.no}</TableCell>
-              <TableCell>{invoice.name}</TableCell>
-              <TableCell>{invoice.plan}</TableCell>
-              <TableCell className="">{invoice.duration}</TableCell>
-              <TableCell className="">€{invoice.price}</TableCell>
-
-              <TableCell className="">{invoice.startDate} </TableCell>
-              <TableCell className="">{invoice.endDate} </TableCell>
+          {subscriber?.data?.slice(0, 4).map((item: any) => (
+            <TableRow key={item._id} className="">
+              <TableCell className="font-medium p-3">
+                #{item?._id.slice(0, 4)}
+              </TableCell>
+              <TableCell>{item?.user?.name}</TableCell>
+              <TableCell>{item?.package?.paymentType}</TableCell>
+              <TableCell className="">{item?.package?.duration}</TableCell>
+              <TableCell className="">€{item.price}</TableCell>
+              {/* <TableCell className="">{item.remaining}%</TableCell> */}
               <TableCell
                 className=" cursor-pointer "
-                onClick={() => setUserDetails(true)}
+                onClick={() => setUserDetails(item)}
               >
-                <button className="mr-3">
+                <button className="mr-3 cursor-pointer">
                   <MdOutlineRemoveRedEye size={22} className="text-[#6CA0DC]" />
                 </button>
-                <button onClick={handleDelete}>
+                <button onClick={() => handleDelete(item?._id)}>
                   <RiDeleteBin6Line className=" text-[22px] cursor-pointer text-red-400" />
                 </button>
               </TableCell>
@@ -137,7 +109,13 @@ export default function SellerChart() {
       </Table>
 
       {/* user details show */}
-      <UserModal isOpen={userDetails} onClose={() => setUserDetails(false)} />
+      {userDetails && (
+        <SubscriberModal
+          isOpen={!!userDetails}
+          data={userDetails}
+          onClose={() => setUserDetails(false)}
+        />
+      )}
     </>
   );
 }

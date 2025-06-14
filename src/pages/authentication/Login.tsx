@@ -3,23 +3,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Checkbox } from "@radix-ui/react-checkbox";
-
-type FormData = {
-  email: string;
-  password: string;
-};
+import { useLoginMutation } from "@/redux/apiSlice/auth/auth";
+import toast from "react-hot-toast";
+import { useState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+type FormData = { email: string; password: string };
 
 export default function Login() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const [login, { isLoading }] = useLoginMutation();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log("Submitted:", data);
+  if (isLoading) {
+    toast.loading("Loading...", { id: "login" });
+  }
+
+  const onSubmit = async (form: FormData) => {
+    try {
+      const result = await login(form).unwrap();
+      toast.success("Login successful", { id: "login" });
+      localStorage.setItem("accessToken", result.data.accessToken);
+      navigate("/");
+    } catch (err: any) {
+      toast.error(
+        err?.data?.message || err?.error || "Login failed. Please try again.",
+        { id: "login" }
+      );
+    }
   };
 
   return (
@@ -32,49 +45,39 @@ export default function Login() {
               Please enter your email and password to continue
             </p>
           </div>
-
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <Label className="text-[#1A1E25] text-xl">Email</Label>
             <div>
-              <Label className="text-[#1A1E25] text-xl">Email</Label>
               <Input
-                type="email"
+                id="email"
                 placeholder="Enter your email"
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("email", { required: "Please enter your email!" })}
               />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.email.message}
-                </p>
-              )}
             </div>
 
-            <div>
-              <Label className="text-[#1A1E25] text-xl">Password</Label>
+            <Label className="text-[#1A1E25] text-xl">Password</Label>
+            <div className="relative">
               <Input
-                type="password"
+                id="password"
                 placeholder="Enter your password"
+                type={`${isPasswordVisible ? "text" : "password"}`}
                 className="h-12 px-6 mt-2 bg-[#F6F6F6] border border-[#1A1E25] text-[#1A1E25]"
                 {...register("password", {
                   required: "Please input your password!",
                 })}
               />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password.message}
-                </p>
-              )}
+              <span
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className="text-slate-400 absolute right-3 top-3 cursor-pointer"
+              >
+                {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+              </span>
             </div>
 
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <Checkbox />
-                {/* <Label
-                  htmlFor="remember"
-                  className="text-lg text-[#1A1E25] cursor-pointer"
-                >
-                  Remember me
-                </Label> */}
               </div>
               <Link to="/forget-password" className="text-md text-[#1A1E25]">
                 Forget password

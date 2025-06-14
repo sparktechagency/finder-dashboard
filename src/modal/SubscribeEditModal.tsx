@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { FiPlusCircle, FiMinusCircle } from "react-icons/fi";
 import { IoMdCheckmarkCircle } from "react-icons/io";
+import { useCreateSubscriptionMutation } from "@/redux/subscriptions/subscriptions";
 
 interface PackageModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface PackageModalProps {
   edit?: {
     _id?: string;
     price?: number;
+    // duration: number | string;
     description?: string;
   };
 }
@@ -28,23 +30,21 @@ export default function SubscribeEditModal({
   onClose,
   edit,
 }: PackageModalProps) {
-  const [packageName, setPackageName] = useState<string | undefined>();
+  const [createSubscription] = useCreateSubscriptionMutation();
+  const [packageName, setPackageName] = useState<string>("");
   const [price, setPrice] = useState<number | undefined>();
-  const [description, setDescription] = useState<string>("");
-  const [offers, setOffers] = useState([
-    "120 day permission to use",
-    "Free training tutorial",
-    "Free journal",
-    "Free consultations",
-    "20 Community post",
-  ]);
+  const [, setDescriptions] = useState<string>("");
+  const [offers, setOffers] = useState(["120 day permission to use"]);
   const [isOfferModalOpen, setOfferModalOpen] = useState(false);
   const [newOffer, setNewOffer] = useState("");
+  const [duration, setDuration] = useState<number | string>("");
+  const [paymentType, setPaymentType] = useState<string>("");
 
   useEffect(() => {
     if (edit?._id) {
       setPrice(edit.price);
-      setDescription(edit.description || "");
+      // setDuration(edit.duration || "");
+      setDescriptions(edit.description || "");
     }
   }, [edit]);
 
@@ -60,14 +60,18 @@ export default function SubscribeEditModal({
     }
   };
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     // Here you can handle the submission data
-    console.log({
-      packageName,
-      price,
-      description,
-      offers,
-    });
+
+    const subscriptionData = {
+      title: packageName || "Default Package",
+      description: offers,
+      price: price || 0,
+      duration: duration,
+      paymentType,
+    };
+
+    await createSubscription(subscriptionData);
     onClose();
   };
 
@@ -103,6 +107,30 @@ export default function SubscribeEditModal({
                 placeholder="Enter price"
                 value={price !== undefined ? price : ""}
                 onChange={(e) => setPrice(Number(e.target.value))}
+                className="mt-1 "
+              />
+            </div>
+            {/* duration */}
+            <div className="mb-4">
+              <Label htmlFor="price">Duration</Label>
+              <Input
+                id="duration"
+                type="text"
+                placeholder="Enter Duration"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                className="mt-1 "
+              />
+            </div>
+            {/* paymentType */}
+            <div className="mb-4">
+              <Label htmlFor="paymentType">Payment Type</Label>
+              <Input
+                id="paymentType"
+                type="text"
+                placeholder="Enter paymentType"
+                value={paymentType}
+                onChange={(e) => setPaymentType(e.target.value)}
                 className="mt-1 "
               />
             </div>

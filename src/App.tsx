@@ -13,7 +13,7 @@ function App() {
         {/* header  */}
         <Header />
         {/* main content */}
-        <div>
+        <div className="overflow-auto h-[calc(100vh-60px)]">
           <MainLayout />
         </div>
       </SidebarInset>

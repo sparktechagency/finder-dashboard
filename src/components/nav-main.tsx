@@ -47,7 +47,7 @@ export function NavMain({
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={item.title}
-                    className="cursor-pointer"
+                    className="cursor-pointer "
                   >
                     {item.icon && (
                       <span className="ml-2 flex  items-center justify-center">

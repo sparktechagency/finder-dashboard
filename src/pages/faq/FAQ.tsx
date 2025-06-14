@@ -1,78 +1,85 @@
-import { useRef, useState } from "react";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import FAQModal from "@/modal/FAQModal";
+import { useDeleteFaqMutation, useGetFaqQuery } from "@/redux/apiSlice/faq/faq";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { MdOutlineClose } from "react-icons/md";
+import { RiEditLine } from "react-icons/ri";
 
-const data = [
-  {
-    id: 1,
-    title: "What’s the app’s main purpose?",
-    content:
-      "The app will use a modern, minimalist design style, focusing on clean lines, intuitive navigation, and a user-friendly interface. The aesthetic will emphasize simplicity, functionality, and responsiveness, with a consistent color palette and sleek typography for enhanced usability.",
-  },
-  {
-    id: 2,
-    title: "What design style will the app use?",
-    content:
-      "The app will use a modern, minimalist design style, focusing on clean lines, intuitive navigation, and a user-friendly interface. The aesthetic will emphasize simplicity, functionality, and responsiveness, with a consistent color palette and sleek typography for enhanced usability.",
-  },
-  {
-    id: 3,
-    title: "What type of support will be offered?",
-    content:
-      "Quisque eget luctus mi, vehicula mollis lorem. Proin fringilla vel erat quis sodales. Nam ex enim, eleifend venenatis lectus vitae, accumsan auctor mi.",
-  },
-  {
-    id: 4,
-    title: "Who is the target audience?",
-    content:
-      "The target audience includes tech enthusiasts, developers, and users interested in minimalist design that is functional and easy to navigate.",
-  },
-];
+export interface FaqItem {
+  _id: string;
+  question: string;
+  ans: string;
+}
 
 const Faq = () => {
-  const [openId, setOpenId] = useState<number | null>(null);
-  const contentRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const { data, isError, isLoading, refetch } = useGetFaqQuery(undefined);
+  const [deleteFaq] = useDeleteFaqMutation();
+  const [editFaq, setEditFaq] = useState<FaqItem | null>(null);
+  const [open, setOpen] = useState(false);
 
-  const toggleAccordion = (id: number) => {
-    setOpenId(openId === id ? null : id);
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteFaq(id);
+      toast.success("delete successfully");
+      refetch();
+    } catch {
+      toast.error("delete failed");
+    }
   };
 
+  if (isLoading) {
+    return <div className="text-center text-gray-500">Loading...</div>;
+  }
+
+  if (isError) {
+    return <div className="text-center text-red-500">Error loading FAQs</div>;
+  }
+
   return (
-    <div className="mb-5 bg-transparent duration-500 ">
-      {data?.map((item) => (
-        <div key={item.id}>
-          <div
-            className="flex justify-between items-center gap-5 p-2 cursor-pointer duration-500 bg-[#F6F6F6] my-2 rounded-md text-[#81888C]"
-            onClick={() => toggleAccordion(item.id)}
-          >
-            <h3 className=" text-[18px] font-normal leading-[30px]">
-              {item.title}
-            </h3>
-            {openId === item.id ? (
-              <IoIosArrowUp className="text-base md:text-lg lg:text-2xl duration-500 " />
-            ) : (
-              <IoIosArrowDown className="text-base md:text-lg lg:text-2xl duration-500" />
-            )}
-          </div>
-          <div
-            ref={(el) => {
-              contentRefs.current[item.id] = el;
-            }}
-            style={{
-              height:
-                openId === item.id
-                  ? `${contentRefs.current[item.id]?.scrollHeight}px`
-                  : "0px",
-              overflow: "hidden",
-              transition: "height 0.5s ease",
-            }}
-          >
-            <p className="p-4 bg-transparent text-base-color duration-500 text-sm md:text-base  rounded-bl rounded-br text-[#1A1E25]">
-              {item.content}
-            </p>
-          </div>
+    <>
+      <div className=" bg-transparent duration-500 ">
+        <div className="flex justify-end ">
+          <FAQModal
+            refetch={refetch}
+            editFaq={editFaq}
+            setEditFaq={setEditFaq}
+            open={open}
+            setOpen={setOpen}
+          />
         </div>
-      ))}
-    </div>
+        {data?.data?.map((item: FaqItem) => (
+          <div
+            key={item?._id}
+            className="bg-[#F6F6F6] p-4 rounded-md space-y-2 mb-4"
+          >
+            {/* Question */}
+            <div className="flex justify-between items-center cursor-pointer">
+              <h3 className="text-[18px] font-normal leading-[30px] text-[#1F1F1F]">
+                {item?.question}
+              </h3>
+              <div className="flex items-center gap-2.5">
+                <span
+                  onClick={() => {
+                    setEditFaq(item);
+                    setOpen(true);
+                  }}
+                >
+                  <RiEditLine size={22} />
+                </span>
+                <span onClick={() => handleDelete(item?._id)}>
+                  <MdOutlineClose size={24} className="text-red-500" />
+                </span>
+              </div>
+            </div>
+
+            {/* Answer */}
+            <div>
+              <p className="text-sm md:text-base text-[#81888C]">{item?.ans}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
