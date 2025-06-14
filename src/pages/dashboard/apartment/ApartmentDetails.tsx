@@ -1,4 +1,4 @@
-import AddFloor from "./ProjectDetails/AddFloor";
+import AddFloor from "./ProjectDetails/GetFloor";
 import AddPhase from "./ProjectDetails/AddPhase";
 
 export default function ApartmentDetails() {

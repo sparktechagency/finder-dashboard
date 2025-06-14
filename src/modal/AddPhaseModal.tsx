@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -10,26 +9,43 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useCreatePhaseDetailsMutation } from "@/redux/apiSlice/phase/phase";
 
-import React from "react";
+import React, { useState } from "react";
 
-export default function AddPhaseModal() {
+export default function AddPhaseModal({ apartment }: { apartment: string }) {
+  const [createPhaseDetails] = useCreatePhaseDetailsMutation();
+  const [selectedDate, setSelectedDate] = useState<string | undefined>();
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const data = new FormData(form);
     const phase = data.get("phase");
-    const date = data.get("date");
-    if (phase && date) {
+
+    if (phase && selectedDate) {
       console.log("Phase:", phase);
-      console.log("Date:", date);
+      console.log("Date:", selectedDate);
+      const data = {
+        apartment,
+        phase,
+        date: selectedDate,
+      };
+      createPhaseDetails(data);
       form.reset();
+      setSelectedDate(undefined); // Reset date after submit
+      setIsOpen(false); // Close the dialog after submission
     }
   };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer">
+        <button
+          className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer"
+          onClick={() => setIsOpen(true)}
+        >
           Add phase
         </button>
       </DialogTrigger>
@@ -41,10 +57,36 @@ export default function AddPhaseModal() {
           <div className="grid gap-4 mt-5">
             <div className="grid gap-3">
               <Label htmlFor="phase">Phase</Label>
-              <Input id="phase" name="phase" placeholder="Enter phase" />
+              <Input
+                id="phase"
+                name="phase"
+                placeholder="Enter phase"
+                required
+              />
             </div>
             <div className="grid gap-3">
-              <DatePicker />
+              <Label>Date</Label>
+              <input
+                type="date"
+                name="date"
+                onChange={(e) => {
+                  const date = e.target.value;
+                  if (date) {
+                    setSelectedDate(date);
+                  } else {
+                    setSelectedDate(undefined);
+                  }
+                }}
+                value={selectedDate ? selectedDate : ""}
+                style={{
+                  height: 45,
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  padding: "8px",
+                  width: "100%",
+                }}
+                required
+              />
             </div>
           </div>
           <DialogFooter>

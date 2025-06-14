@@ -10,13 +10,13 @@ export default function ApartmentPage() {
   const [imageSections, setImageSections] = useState<(File | null)[]>([]);
   const [qualitySpecs, setQualitySpecs] = useState<{ [key: string]: string }>({
     category: "",
-    // generalAmenites: "",
-    // connectivity: "",
-    // ecoFriendly: "",
-    // parking: "",
-    // receational: "",
-    // accessiblity: "",
-    // nearbyFacilities: "",
+    generalAmenites: "",
+    connectivity: "",
+    ecoFriendly: "",
+    parking: "",
+    receational: "",
+    accessiblity: "",
+    nearbyFacilities: "",
   });
 
   // const handleFileChange =
@@ -79,6 +79,7 @@ export default function ApartmentPage() {
 
   const handleRemove = (key: string) => {
     setQualitySpecs((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [key]: _, ...rest } = prev;
       return rest;
     });

@@ -8,24 +8,10 @@ const apartments = api.injectEndpoints({
         method: "GET",
       }),
     }),
-    getApartmentsDetails: builder.query({
-      query: () => ({
-        url: "/floor",
-        method: "GET",
-      }),
-    }),
 
     createApartment: builder.mutation({
       query: (data) => ({
         url: "/apartment/create",
-        method: "POST",
-        body: data,
-      }),
-    }),
-
-    createApartmentFloor: builder.mutation({
-      query: (data) => ({
-        url: "/floor/create",
         method: "POST",
         body: data,
       }),
@@ -36,6 +22,25 @@ const apartments = api.injectEndpoints({
         url: `/apartment/${id}`,
         method: "DELETE",
       }),
+    }),
+
+    getApartmentsDetails: builder.query({
+      query: () => ({
+        url: "/floor",
+        method: "GET",
+      }),
+      // providesTags: ["floorPlans"],
+    }),
+
+    createApartmentFloor: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/floor/create",
+          method: "POST",
+          body: data,
+        };
+      },
+      // invalidatesTags: ["floorPlans"],
     }),
   }),
 });

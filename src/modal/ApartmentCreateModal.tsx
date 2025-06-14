@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useCreateApartmentFloorMutation } from "@/redux/apiSlice/apartments/apartments";
+import {
+  useCreateApartmentFloorMutation,
+  useGetApartmentsDetailsQuery,
+} from "@/redux/apiSlice/apartments/apartments";
 
 interface Props {
   isOpen: boolean;
@@ -18,8 +21,14 @@ interface Props {
   apartmentId: string;
 }
 
-export default function ApartmentCreateModal({ isOpen, onClose }: Props) {
+export default function ApartmentCreateModal({
+  isOpen,
+  onClose,
+  apartmentId,
+}: Props) {
+  console.log("apartmentId:", apartmentId);
   const [createApartmentFloor] = useCreateApartmentFloorMutation();
+  const { refetch } = useGetApartmentsDetailsQuery(undefined);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const handleFileChange = ({
@@ -36,9 +45,21 @@ export default function ApartmentCreateModal({ isOpen, onClose }: Props) {
 
     if (isNaN(Number(formData.get("price"))))
       return toast.error("Price must be a number");
-    if (isNaN(Number(formData.get("bedSize"))))
+    if (isNaN(Number(formData.get("badSize"))))
       return toast.error("Bed size must be a number");
+
+    // const badSize = formData.get("badSize");
+
+    if (apartmentId) {
+      formData.append("apartmentId", apartmentId);
+    }
+
+    // if (badSize) {
+    //   formData.append("badSize", Number(badSize).toString());
+    // }
+
     if (pdfFile) formData.append("floorPlanPDF", pdfFile);
+    console.log("Form Data:", formData.values());
 
     try {
       const res = await createApartmentFloor(formData).unwrap();
@@ -46,6 +67,7 @@ export default function ApartmentCreateModal({ isOpen, onClose }: Props) {
         toast.success(res.message || "Created Successfully");
         setPdfFile(null);
         onClose();
+        refetch();
       }
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to create apartment details");
@@ -60,7 +82,7 @@ export default function ApartmentCreateModal({ isOpen, onClose }: Props) {
       placeholder: "Select Unit Name",
     },
     {
-      id: "bedSize",
+      id: "badSize",
       label: "Number of Bedroom",
       type: "number",
       placeholder: "Enter Number of Bedrooms",
@@ -119,7 +141,7 @@ export default function ApartmentCreateModal({ isOpen, onClose }: Props) {
           <DialogFooter>
             <Button
               type="submit"
-              className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl"
+              className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl cursor-pointer"
             >
               Submit
             </Button>

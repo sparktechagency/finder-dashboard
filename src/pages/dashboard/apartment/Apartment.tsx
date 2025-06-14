@@ -20,6 +20,7 @@ import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
 import AddPhaseModal from "@/modal/AddPhaseModal";
 import ApartmentCreateModal from "@/modal/ApartmentCreateModal";
+import { imageUrl } from "@/redux/api/baseApi";
 
 interface ApartmentData {
   _id: string;
@@ -46,8 +47,6 @@ export default function Apartment() {
   const [selectedApartmentId, setSelectedApartmentId] = useState<string | null>(
     null
   );
-
-  console.log(data?.data);
 
   const handleDelete = (id: string) => {
     Swal.fire({
@@ -104,14 +103,42 @@ export default function Apartment() {
                 {invoice?._id.slice(0, 4)}
               </TableCell>
               <TableCell>{invoice.apartmentName}</TableCell>
-              <TableCell>{invoice.paymentPlanPDF.split("/").pop()}</TableCell>
               <TableCell>
-                {invoice.qualitySpecificationPDF?.[0]?.split("/").pop()}
+                <a
+                  href={
+                    invoice.paymentPlanPDF?.startsWith("http")
+                      ? invoice.paymentPlanPDF
+                      : `${imageUrl}${invoice.paymentPlanPDF}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 hover:underline"
+                >
+                  View PDF
+                </a>
+              </TableCell>
+              <TableCell>
+                <a
+                  href={
+                    invoice.qualitySpecificationPDF?.[0]?.startsWith("http")
+                      ? invoice.qualitySpecificationPDF?.[0]
+                      : `${imageUrl}${invoice.qualitySpecificationPDF?.[0]}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-700 hover:underline"
+                >
+                  View PDF
+                </a>
               </TableCell>
               <TableCell>{invoice.location}</TableCell>
               <TableCell className="">{invoice.commission}</TableCell>
               <TableCell>€{invoice.price}</TableCell>
-              <TableCell className="">{invoice.CompletionDate}</TableCell>
+              <TableCell className="">
+                {invoice.CompletionDate
+                  ? new Date(invoice.CompletionDate).toISOString().split("T")[0]
+                  : null}
+              </TableCell>
               <TableCell>
                 <button
                   className="border border-gray-300 px-4 py-2 rounded-2xl cursor-pointer"
@@ -124,7 +151,7 @@ export default function Apartment() {
                 </button>
               </TableCell>
               <TableCell>
-                <AddPhaseModal />
+                <AddPhaseModal apartment={invoice._id} />
               </TableCell>
               <TableCell>
                 <button

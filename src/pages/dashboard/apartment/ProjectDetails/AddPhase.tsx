@@ -10,19 +10,37 @@ import {
 import Loading from "@/components/layout/shared/Loading";
 import ErrorPage from "@/error/ErrorPage";
 import { useGetPhaseDetailsQuery } from "@/redux/apiSlice/phase/phase";
+import Pagination from "@/components/layout/shared/Pagination";
+import { useState } from "react";
 
 interface ApartmentData {
   _id: string;
   phase: string;
   date: string;
   apartmentId: string;
+  apartment: string;
 }
 
 export default function AddPhase() {
   const { data, isFetching, isError, isLoading } =
     useGetPhaseDetailsQuery(undefined);
-  //   const searchParams = new URLSearchParams(window.location.search);
-  //   const apartmentId = searchParams.get("id");
+  const searchParams = new URLSearchParams(window.location.search);
+  const apartmentId = searchParams.get("id");
+
+  const phaseDetails =
+    data?.data?.filter((item: ApartmentData) => {
+      return item.apartment === apartmentId;
+    }) || [];
+
+  // pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(phaseDetails.length / itemsPerPage);
+  const paginatedItems = phaseDetails.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   if (isLoading || isFetching) {
     return <Loading />;
@@ -46,7 +64,7 @@ export default function AddPhase() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.data?.map((invoice: ApartmentData, index: number) => (
+          {paginatedItems?.map((invoice: ApartmentData, index: number) => (
             <TableRow key={invoice._id} className="">
               <TableCell className="font-medium p-3">{index + 1}</TableCell>
               <TableCell className="flex items-center gap-2 pl-5">
@@ -58,6 +76,15 @@ export default function AddPhase() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      </div>
     </>
   );
 }

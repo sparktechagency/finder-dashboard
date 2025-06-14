@@ -7,8 +7,18 @@ const phase = api.injectEndpoints({
         url: `/phase`,
         method: "GET",
       }),
+      providesTags: ["package"],
+    }),
+
+    createPhaseDetails: builder.mutation({
+      query: (data) => ({
+        url: `/phase/create`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["package"],
     }),
   }),
 });
 
-export const { useGetPhaseDetailsQuery } = phase;
+export const { useGetPhaseDetailsQuery, useCreatePhaseDetailsMutation } = phase;
