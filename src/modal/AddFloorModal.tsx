@@ -55,7 +55,6 @@ export default function AddFloorModal({ isOpen, onClose, apartmentId }: Props) {
     // }
 
     if (pdfFile) formData.append("floorPlanPDF", pdfFile);
-    console.log("Form Data:", formData.values());
 
     try {
       const res = await createProjectFloor(formData).unwrap();

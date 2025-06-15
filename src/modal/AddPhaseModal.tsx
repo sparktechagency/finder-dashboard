@@ -25,8 +25,6 @@ export default function AddPhaseModal({ apartment }: { apartment: string }) {
     const phase = data.get("phase");
 
     if (phase && selectedDate) {
-      console.log("Phase:", phase);
-      console.log("Date:", selectedDate);
       const data = {
         apartment,
         phase,
