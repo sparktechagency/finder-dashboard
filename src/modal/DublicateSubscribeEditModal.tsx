@@ -81,7 +81,6 @@ export default function DublicateSubscribeEditModal({
   }, [edit]);
 
   const removeOffer = (index: number) => {
-    console.log(index);
     setFormState((prev) => ({
       ...prev,
       description: prev.description.filter((_, i) => i !== index),

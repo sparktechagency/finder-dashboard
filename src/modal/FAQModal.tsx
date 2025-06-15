@@ -17,8 +17,6 @@ import {
 import toast from "react-hot-toast";
 import { LuPlus } from "react-icons/lu";
 
-// Define the FaqItem type or import it from the correct location
-
 interface FAQModalProps {
   refetch: () => void;
   editFaq: any;

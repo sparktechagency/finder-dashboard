@@ -56,8 +56,6 @@ export default function EditProfile() {
     }
   }, [data, form]);
 
-  console.log(data?.data);
-
   const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target?.files?.[0];
     if (file) {
