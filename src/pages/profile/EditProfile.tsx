@@ -93,12 +93,12 @@ export default function EditProfile() {
       <div className="w-[1035px] mx-auto">
         <div className="flex items-center justify-between gap-4  mt-12">
           <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full border border-gray-500   p-2">
+            <div className="relative  ">
               {previewUrl ? (
                 <img
                   src={previewUrl}
                   alt="preview"
-                  className="w-full h-full object-cover p-2"
+                  className="w-24 h-24 rounded-full border border-gray-500 object-cover"
                 />
               ) : (
                 <div className="w-[90%] h-[90%] flex items-center justify-center text-gray-400 text-base">

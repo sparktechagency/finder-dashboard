@@ -14,7 +14,7 @@ import { BiColorFill } from "react-icons/bi";
 
 import { LuFileSliders } from "react-icons/lu";
 import { PiNoteDuotone } from "react-icons/pi";
-import { TbEdit, TbLogout2, TbNotes } from "react-icons/tb";
+import { TbEdit, TbLogout2 } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 import { RiExchange2Fill } from "react-icons/ri";
 import { CiSettings } from "react-icons/ci";
@@ -78,7 +78,7 @@ const data = {
           url: "/privacy-policy",
           icon: PiNoteDuotone,
         },
-        { title: "Terms & Conditions", url: "terms-condition", icon: TbNotes },
+        // { title: "Terms & Conditions", url: "terms-condition", icon: TbNotes },
       ],
     },
   ],

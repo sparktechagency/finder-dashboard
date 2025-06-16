@@ -97,11 +97,9 @@ export default function Projects() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.data?.map((invoice: ApartmentData) => (
+          {data?.data?.map((invoice: ApartmentData, index: number) => (
             <TableRow key={invoice._id}>
-              <TableCell className="font-medium">
-                {invoice?._id.slice(0, 4)}
-              </TableCell>
+              <TableCell className="font-medium pl-4">{index + 1}</TableCell>
               <TableCell>{invoice.apartmentName}</TableCell>
               <TableCell>
                 <a
