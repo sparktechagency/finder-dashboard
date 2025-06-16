@@ -30,9 +30,18 @@ export default function ChangePassword() {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    await changePassword(data);
-    reset();
-    toast.success("change password successfull");
+    try {
+      const res = await changePassword(data).unwrap();
+      if (res.message) {
+        reset();
+        toast.success("change password successfull");
+      } else {
+        toast.error("Failed to change password. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast.error("Failed to change password. Please try again.");
+    }
   };
 
   // Watch newPassword to validate confirmPassword matches

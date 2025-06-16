@@ -71,7 +71,7 @@ export default function AddPhase() {
                 {invoice.phase}
               </TableCell>
 
-              <TableCell className="">{invoice.date}</TableCell>
+              <TableCell className="">{invoice.date.split("T")[0]}</TableCell>
             </TableRow>
           ))}
         </TableBody>

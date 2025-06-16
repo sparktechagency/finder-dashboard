@@ -7,7 +7,7 @@ import {
 } from "@/redux/apiSlice/settings/settings";
 
 export default function AboutUS() {
-  const { data, isError, isLoading, refetch } = useGetAboutQuery(undefined);
+  const { data, isLoading, refetch } = useGetAboutQuery(undefined);
   const [updateAbout] = useUpdateAboutMutation();
 
   const editor = useRef(null);
@@ -23,9 +23,9 @@ export default function AboutUS() {
   if (isLoading) {
     return <span>Loading ....</span>;
   }
-  if (isError) {
-    return <span>data not found ....</span>;
-  }
+  // if (isError) {
+  //   return <span>data not found ....</span>;
+  // }
 
   const handleOnSave = async () => {
     const data = { text: content };

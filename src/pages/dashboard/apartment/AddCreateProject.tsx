@@ -51,7 +51,7 @@ export default function AddCreateProject({
   handleRemove,
 }: ApartmentFormProps) {
   const [createProject] = useCreateProjectMutation();
-  const [right, setRight] = useState(false);
+  const [right, setRight] = useState(true);
   const [selectValues, setSelectValues] = useState({
     propertyType: "",
     location: "",
@@ -132,9 +132,13 @@ export default function AddCreateProject({
     );
 
     try {
-      await createProject(formData);
-      toast.success("create successfully");
-      form.reset();
+      const res = await createProject(formData).unwrap();
+      if (res.message) {
+        toast.success("Project created successfully");
+        // form.reset();
+      } else {
+        toast.error("Failed to create project. Please try again.");
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -317,7 +321,7 @@ export default function AddCreateProject({
 
       <Button
         type="submit"
-        className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl mb-9"
+        className="w-full bg-[#F79535] hover:bg-[#F79535] text-black text-xl mb-24"
       >
         Submit
       </Button>

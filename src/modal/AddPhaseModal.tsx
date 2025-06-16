@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useCreatePhaseDetailsMutation } from "@/redux/apiSlice/phase/phase";
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AddPhaseModal({ apartment }: { apartment: string }) {
   const [createPhaseDetails] = useCreatePhaseDetailsMutation();
@@ -30,10 +31,20 @@ export default function AddPhaseModal({ apartment }: { apartment: string }) {
         phase,
         date: selectedDate,
       };
-      createPhaseDetails(data);
-      form.reset();
-      setSelectedDate(undefined); // Reset date after submit
-      setIsOpen(false); // Close the dialog after submission
+      try {
+        const res = await createPhaseDetails(data).unwrap();
+        if (res.success) {
+          toast.success("Phase details created successfully");
+          form.reset();
+        } else {
+          toast.error("Failed to create phase details");
+        }
+      } catch (error) {
+        console.error("Error creating phase details:", error);
+      } finally {
+        setSelectedDate(undefined); // Reset date after submit
+        setIsOpen(false); // Close the dialog after submission
+      }
     }
   };
 
