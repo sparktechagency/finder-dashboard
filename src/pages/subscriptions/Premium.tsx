@@ -45,7 +45,7 @@ export default function Premium() {
           >
             <div className="flex items-center justify-between text-[#1A1E25] ">
               <h2 className="text-xl font-semibold text-center">
-                {item.title}
+                {item.title === "Starter Plan" ? "Standard Plan" : item.title}
               </h2>
               <button onClick={() => setEdit(item)}>
                 <RiEditLine size={22} className="cursor-pointer" />
